@@ -1,0 +1,86 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+.yarn/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+.turbo/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+test-results/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Generated files
+*.generated.ts
+*.generated.js
+
+# Large files
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.mp4
+*.mov
+*.zip
+*.tar.gz
+
+# Sensitive data
+secrets/
+*.pem
+*.key
+*.cert
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Cache
+.cache/
+.parcel-cache/
+.eslintcache
+
+# OS files
+Thumbs.db
+
+# Puppeteer
+.puppeteer/
+
+# Documentation builds
+docs/_build/
+docs/.docusaurus/
+
+# Misc
+*.bak
+*.backup
+.vercel/
