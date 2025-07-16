@@ -5,6 +5,7 @@ import Link from 'next/link';
 export default function HomePage() {
   const { userId } = auth();
 
+  // If user is already signed in, redirect to dashboard
   if (userId) {
     redirect('/dashboard');
   }

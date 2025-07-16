@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs';
-import { createSupabaseClient } from '@docshot/database';
+import { getSupabaseClient } from '@docshot/database';
 import { createQueueManager } from '@docshot/shared';
+import { userService } from '../../../lib/user-service';
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,10 +12,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const supabase = createSupabaseClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_KEY!
-    );
+    // Check user permissions
+    const permissions = await userService.checkUserPermissions(userId);
+    if (!permissions.canTakeScreenshot) {
+      return NextResponse.json(
+        { error: 'Screenshot limit reached for your subscription tier' },
+        { status: 403 }
+      );
+    }
+
+    const supabase = getSupabaseClient();
 
     const { projectId } = await request.json();
 
@@ -22,12 +29,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Project ID required' }, { status: 400 });
     }
 
-    // Get project screenshots
+    // Get project screenshots with user context
     const { data: screenshots, error } = await supabase
-      .from('screenshots')
-      .select('*')
-      .eq('project_id', projectId)
-      .eq('status', 'pending');
+      .withUserContext(userId, async (client) => {
+        return client
+          .from('screenshots')
+          .select('*')
+          .eq('project_id', projectId)
+          .eq('status', 'pending');
+      });
 
     if (error) {
       console.error('Database error:', error);
@@ -56,6 +66,11 @@ export async function POST(request: NextRequest) {
 
       // Wait for all jobs to be queued
       await Promise.all(jobPromises);
+
+      // Track usage for each screenshot
+      for (let i = 0; i < screenshots.length; i++) {
+        await userService.trackScreenshotUsage(userId);
+      }
 
       console.log('Successfully queued', screenshots.length, 'screenshot jobs');
     } catch (queueError) {

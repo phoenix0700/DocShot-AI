@@ -1,0 +1,11 @@
+// Temporarily disabled for local testing
+// import { authMiddleware } from '@clerk/nextjs';
+
+// export default authMiddleware({
+//   publicRoutes: ['/', '/sign-up', '/sign-in', '/dashboard', '/projects/(.*)', '/api/(.*)'],
+//   ignoredRoutes: ['/api/(.*)'],
+// });
+
+// export const config = {
+//   matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
+// };
