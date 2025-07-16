@@ -8,7 +8,7 @@ import { LoadingSpinner } from '../ui/LoadingSpinner';
 
 interface YamlEditorProps {
   initialConfig?: string;
-  onSave: (config: ProjectConfig, yamlContent: string) => Promise<void>;
+  onSave: (config: ProjectConfig) => Promise<void>;
   onCancel?: () => void;
   projectName?: string;
   className?: string;
@@ -89,7 +89,7 @@ export function YamlEditor({
 
     try {
       setIsSaving(true);
-      await onSave(parsedConfig, yamlContent);
+      await onSave(parsedConfig);
     } catch (error) {
       console.error('Error saving configuration:', error);
       alert('Failed to save configuration. Please try again.');
@@ -121,7 +121,6 @@ integrations:
 
     const templateContent = templates[template as keyof typeof templates];
     if (templateContent) {
-      const cursorPosition = yamlContent.length;
       const newContent = yamlContent + '\n' + templateContent;
       setYamlContent(newContent);
     }

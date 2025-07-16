@@ -42,7 +42,7 @@ interface Screenshot {
 interface ScreenshotItemProps {
   screenshot: Screenshot;
   onDeleted: () => void;
-  onUpdated: (screenshot: Screenshot) => void;
+  onUpdated: (_screenshot: Screenshot) => void;
   userId: string;
 }
 

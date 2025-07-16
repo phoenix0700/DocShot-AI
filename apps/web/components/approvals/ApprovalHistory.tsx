@@ -26,7 +26,7 @@ export function ApprovalHistory({ screenshotId, className = '' }: ApprovalHistor
 
   useEffect(() => {
     loadHistory();
-  }, [screenshotId]);
+  }, [screenshotId, loadHistory]);
 
   const loadHistory = async () => {
     try {
@@ -161,7 +161,7 @@ export function ApprovalHistory({ screenshotId, className = '' }: ApprovalHistor
                       
                       {event.reason && (
                         <p className="text-sm text-gray-600 mt-1 italic">
-                          "{event.reason}"
+                          &ldquo;{event.reason}&rdquo;
                         </p>
                       )}
                     </div>

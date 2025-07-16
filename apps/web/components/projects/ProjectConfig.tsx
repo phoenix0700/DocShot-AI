@@ -29,7 +29,7 @@ export function ProjectConfig({ projectId, userId }: ProjectConfigProps) {
 
   useEffect(() => {
     loadProject();
-  }, [projectId]);
+  }, [projectId, loadProject]);
 
   const loadProject = async () => {
     try {
@@ -107,7 +107,7 @@ settings:
   defaultDiffThreshold: 0.1`;
   };
 
-  const handleSaveConfig = async (config: ProjectConfigType, yamlContent: string) => {
+  const handleSaveConfig = async (config: ProjectConfigType) => {
     try {
       // Save the YAML configuration to the database
       const { error: updateError } = await supabase

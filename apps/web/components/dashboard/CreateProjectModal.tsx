@@ -31,7 +31,7 @@ export function CreateProjectModal({ userId, onClose, onProjectCreated }: Create
       setIsSubmitting(true);
       setError(null);
 
-      const { data, error: supabaseError } = await supabase
+      const { error: supabaseError } = await supabase
         .from('projects')
         .insert({
           name: formData.name.trim(),
