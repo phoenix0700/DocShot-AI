@@ -133,6 +133,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `pnpm format` - Format code with Prettier
 - `docker-compose up -d` - Start local services (Redis, MinIO)
 
+### GitHub Integration
+- GitHub MCP server is configured for automated repository operations
+- Use `gh` CLI for GitHub operations when MCP is not available
+- Auto-commit and push changes when requested by user
+- Create PRs with proper titles and descriptions
+- See `docs/GITHUB_INTEGRATION.md` for complete setup instructions
+
 ### Testing
 - No test framework is currently configured. When implementing tests, use Vitest for unit tests and Playwright for E2E tests.
 
@@ -182,6 +189,33 @@ Three main job types:
 - `notification` - Sends email/Slack notifications
 
 Jobs are processed with configurable concurrency and include retry logic.
+
+## GitHub Automation Workflows
+
+### When Claude Code should automatically use GitHub:
+1. **Committing Changes**: When user asks to "push to GitHub" or "commit changes"
+2. **Creating Pull Requests**: When implementing features that need review
+3. **Issue Management**: When bugs are discovered or features are requested
+4. **Release Management**: When deploying new versions
+5. **Documentation Updates**: When project documentation changes
+
+### Automated GitHub Operations:
+- **Auto-commit**: Stage all changes, create descriptive commit messages, push to origin
+- **PR Creation**: Create feature branches, implement changes, create PR with proper description
+- **Issue Tracking**: Create issues for bugs, link PRs to issues, update issue status
+- **Release Notes**: Generate changelogs, create GitHub releases with proper tags
+
+### GitHub Integration Commands:
+- `gh pr create --title "Title" --body "Description"` - Create pull request
+- `gh issue create --title "Title" --body "Description"` - Create issue
+- `gh release create v1.0.0 --title "Release" --notes "Notes"` - Create release
+- `git push origin main` - Push changes to main branch
+
+### Repository Information:
+- **Owner**: phoenix0700
+- **Repository**: DocShot-AI
+- **Main Branch**: main
+- **GitHub URL**: https://github.com/phoenix0700/DocShot-AI
 
 ## Important Patterns
 
