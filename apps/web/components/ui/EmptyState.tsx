@@ -1,13 +1,14 @@
 'use client';
 
 import { Button } from './Button';
+import { ReactNode } from 'react';
 
 interface EmptyStateProps {
   title: string;
   description?: string;
   actionLabel?: string;
   onAction?: () => void;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
 }
 
 export function EmptyState({ 

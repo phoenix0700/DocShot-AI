@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { supabase } from '../../lib/supabase';
+// import { supabase } from '../../lib/supabase';
 import { Button } from '../ui/Button';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
 
@@ -21,11 +21,11 @@ interface ApprovalWorkflowProps {
 export function ApprovalWorkflow({ 
   screenshotId, 
   currentStatus, 
-  onStatusChange, 
-  userId,
+  onStatusChange,
   diffData,
   className = ''
 }: ApprovalWorkflowProps) {
+  // TODO: Implement approval workflow logic
   const [isProcessing, setIsProcessing] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');

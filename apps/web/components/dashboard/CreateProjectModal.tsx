@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, FormEvent, ChangeEvent } from 'react';
 import { supabase } from '../../lib/supabase';
 import { Button } from '../ui/Button';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
@@ -8,7 +8,7 @@ import { LoadingSpinner } from '../ui/LoadingSpinner';
 interface CreateProjectModalProps {
   userId: string;
   onClose: () => void;
-  onProjectCreated: (project: any) => void;
+  onProjectCreated: () => void;
 }
 
 export function CreateProjectModal({ userId, onClose, onProjectCreated }: CreateProjectModalProps) {
@@ -19,7 +19,7 @@ export function CreateProjectModal({ userId, onClose, onProjectCreated }: Create
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
     if (!formData.name.trim()) {
@@ -45,11 +45,7 @@ export function CreateProjectModal({ userId, onClose, onProjectCreated }: Create
         throw supabaseError;
       }
 
-      onProjectCreated({
-        ...data,
-        screenshot_count: 0,
-        status: 'inactive',
-      });
+      onProjectCreated();
     } catch (err: any) {
       console.error('Error creating project:', err);
       setError(err.message || 'Failed to create project. Please try again.');
@@ -58,7 +54,7 @@ export function CreateProjectModal({ userId, onClose, onProjectCreated }: Create
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     if (error) setError(null);

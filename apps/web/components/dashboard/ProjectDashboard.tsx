@@ -72,8 +72,8 @@ export function ProjectDashboard({ userId }: ProjectDashboardProps) {
     }
   };
 
-  const handleProjectCreated = (newProject: Project) => {
-    setProjects(prev => [newProject, ...prev]);
+  const handleProjectCreated = () => {
+    loadProjects(); // Reload projects after creation
     setShowCreateModal(false);
   };
 

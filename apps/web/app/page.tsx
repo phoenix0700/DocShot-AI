@@ -1,7 +1,6 @@
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 
 export default function HomePage() {
   const { userId } = auth();
@@ -251,7 +250,7 @@ integrations:
               Perfect for Every Team
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              DocShot AI adapts to your workflow, whether you're a startup or enterprise.
+              DocShot AI adapts to your workflow, whether you&apos;re a startup or enterprise.
             </p>
           </div>
 
