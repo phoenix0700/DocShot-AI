@@ -346,5 +346,4 @@ export function createStorageService(config?: Partial<StorageConfig>): StorageSe
   return new StorageService({ ...defaultConfig, ...config });
 }
 
-// Type exports
-export type { StorageConfig, UploadOptions, UploadResult, StorageObject };
+// Types are already exported as interfaces above

@@ -1,8 +1,36 @@
-import { Job } from 'bullmq';
+import { Job, Queue } from 'bullmq';
 import { ScreenshotJobDataSchema, createStorageService } from '@docshot/shared';
 import { captureScreenshot } from '../lib/puppeteer';
 import { createSupabaseClient } from '@docshot/database';
+import Redis from 'ioredis';
 // import { GitHubIntegrationService } from '../services/github-integration';
+
+// Retry utility with exponential backoff
+const retryWithBackoff = async <T>(
+  fn: () => Promise<T>,
+  maxRetries: number,
+  baseDelay: number
+): Promise<T> => {
+  let lastError: Error;
+  
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error('Unknown error');
+      
+      if (attempt === maxRetries) {
+        throw lastError;
+      }
+      
+      const delay = baseDelay * Math.pow(2, attempt - 1);
+      console.log(`Attempt ${attempt} failed, retrying in ${delay}ms:`, lastError.message);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+  
+  throw lastError!;
+};
 
 // Create Supabase client lazily to ensure environment variables are loaded
 const getSupabaseClient = () => {
@@ -17,20 +45,30 @@ const getStorageService = () => {
   return createStorageService();
 };
 
+const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
+const notificationQueue = new Queue('notification', { connection: redis });
+
 export const screenshotProcessor = async (job: Job) => {
   const data = ScreenshotJobDataSchema.parse(job.data);
+  const maxRetries = 3;
+  const attempt = job.attemptsMade + 1;
   
   try {
     job.updateProgress(10);
-    console.log(`Processing screenshot job for ${data.url}`);
+    console.log(`Processing screenshot job for ${data.url} (attempt ${attempt}/${maxRetries})`);
     
-    // Capture screenshot
+    // Capture screenshot with retry logic
     job.updateProgress(30);
-    const result = await captureScreenshot({
-      url: data.url,
-      selector: data.selector,
-      viewport: data.viewport,
-    });
+    const result = await retryWithBackoff(
+      () => captureScreenshot({
+        url: data.url,
+        selector: data.selector,
+        viewport: data.viewport,
+        waitForTimeout: data.selector ? 2000 : 1000, // Extra wait for element screenshots
+      }),
+      3,
+      1000
+    );
     
     job.updateProgress(60);
     console.log(`Screenshot captured for ${data.url}, size: ${result.buffer.length} bytes`);
@@ -92,8 +130,7 @@ export const screenshotProcessor = async (job: Job) => {
     
     // Queue notification for successful capture
     try {
-      const queue = job.queue;
-      await queue.add('notification', {
+      await notificationQueue.add('screenshot_captured', {
         type: 'screenshot_captured',
         projectId: data.projectId,
         screenshotId: data.screenshotId,
@@ -129,8 +166,7 @@ export const screenshotProcessor = async (job: Job) => {
     
     // Queue notification for failure
     try {
-      const queue = job.queue;
-      await queue.add('notification', {
+      await notificationQueue.add('screenshot_failed', {
         type: 'screenshot_failed',
         projectId: data.projectId,
         screenshotId: data.screenshotId,

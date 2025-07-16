@@ -24,6 +24,19 @@ interface Screenshot {
   github_url: string | null;
   created_at: string;
   updated_at: string;
+  previous_image_url?: string | null;
+  diff_image_url?: string | null;
+  diff_data?: {
+    pixelDiff: number;
+    percentageDiff: number;
+    totalPixels: number;
+    significant: boolean;
+    dimensions: {
+      width: number;
+      height: number;
+    };
+  };
+  viewport?: string | null;
 }
 
 interface ScreenshotItemProps {
@@ -155,6 +168,16 @@ export function ScreenshotItem({ screenshot, onDeleted, onUpdated, userId }: Scr
             </div>
 
             <div className="flex items-center space-x-2 ml-4">
+              {/* Diff Status Badge */}
+              {screenshot.diff_data && screenshot.diff_data.significant && (
+                <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                  <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  {screenshot.diff_data.percentageDiff.toFixed(1)}% changed
+                </div>
+              )}
+              
               <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(screenshot.status)}`}>
                 {getStatusIcon(screenshot.status)}
                 <span className="ml-1.5 capitalize">{screenshot.status}</span>
@@ -255,8 +278,19 @@ export function ScreenshotItem({ screenshot, onDeleted, onUpdated, userId }: Scr
       {showDiffViewer && screenshot.image_url && (
         <DiffViewer
           currentImageUrl={screenshot.image_url}
+          previousImageUrl={screenshot.previous_image_url || undefined}
+          diffImageUrl={screenshot.diff_image_url || undefined}
+          diffData={screenshot.diff_data}
           title={screenshot.name}
+          screenshotMetadata={{
+            url: screenshot.url,
+            selector: screenshot.selector || undefined,
+            timestamp: screenshot.updated_at,
+            viewport: screenshot.viewport || undefined,
+          }}
           onClose={() => setShowDiffViewer(false)}
+          onApprove={() => handleApprovalStatusChange('approved')}
+          onReject={() => handleApprovalStatusChange('rejected')}
         />
       )}
     </div>

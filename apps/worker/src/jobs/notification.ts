@@ -21,6 +21,7 @@ export const notificationProcessor = async (job: Job) => {
     logger.info(`Processing notification: ${data.type} for project ${data.projectId}`);
     
     // Fetch project and user details
+    const supabase = getSupabaseClient();
     const { data: project, error: projectError } = await supabase
       .from('projects')
       .select('name, user_id, config')
@@ -67,13 +68,17 @@ export const notificationProcessor = async (job: Job) => {
         
       case 'diff_detected':
         if (screenshot) {
-          // For MVP, we'll use a simple percentage diff
+          // Extract diff data from the notification data or screenshot
+          const diffData = data.diffData || screenshot.diff_data || { percentageDiff: 0 };
           emailContent = EmailService.generateDiffDetectedEmail({
             projectName: project.name,
             screenshotName: screenshot.name,
-            percentageDiff: 5.0, // Placeholder - should come from diff data
-            diffUrl: screenshot.image_url,
+            percentageDiff: diffData.percentageDiff || 0,
+            diffUrl: data.diffImageUrl || screenshot.diff_image_url,
             approvalUrl: `${process.env.NEXT_PUBLIC_APP_URL}/projects/${data.projectId}`,
+            screenshotUrl: screenshot.url,
+            pixelDiff: diffData.pixelDiff,
+            totalPixels: diffData.totalPixels,
           });
         }
         break;
@@ -85,6 +90,27 @@ export const notificationProcessor = async (job: Job) => {
             screenshotName: screenshot.name,
             url: screenshot.url,
             error: data.message || 'Unknown error',
+          });
+        }
+        break;
+        
+      case 'project_summary':
+        if (data.summary) {
+          emailContent = EmailService.generateProjectSummaryEmail({
+            projectName: project.name,
+            summary: data.summary,
+            dashboardUrl: `${process.env.NEXT_PUBLIC_APP_URL}/projects/${data.projectId}`,
+            period: data.period || 'Daily',
+          });
+        }
+        break;
+        
+      case 'bulk_changes':
+        if (data.changes && data.changes.length > 0) {
+          emailContent = EmailService.generateBulkChangesEmail({
+            projectName: project.name,
+            changes: data.changes,
+            approvalUrl: `${process.env.NEXT_PUBLIC_APP_URL}/projects/${data.projectId}`,
           });
         }
         break;

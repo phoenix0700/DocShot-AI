@@ -277,6 +277,5 @@ export function createQueueManager(config?: Partial<QueueConfig>): QueueManager 
   return new QueueManager({ ...defaultConfig, ...config });
 }
 
-// Export types
-export type { QueueConfig };
+// QueueConfig is already exported as interface above
 export { Queue } from 'bullmq';

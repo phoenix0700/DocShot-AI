@@ -33,20 +33,4 @@ export interface YamlConfig {
   schedule?: string;
 }
 
-export interface ProjectConfig {
-  version: string;
-  project: {
-    name: string;
-    description?: string;
-  };
-  screenshots: YamlConfig[];
-  integrations?: {
-    github?: {
-      repo: string;
-      path: string;
-    };
-    notion?: {
-      pageId: string;
-    };
-  };
-}
+// ProjectConfig is now exported from yaml-parser.ts (generated from Zod schema)

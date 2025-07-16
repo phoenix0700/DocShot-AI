@@ -1,0 +1,181 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., v1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: Build all packages
+        run: pnpm build
+        
+      - name: Run tests
+        run: pnpm test
+        
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Get the latest tag
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          
+          # Generate changelog
+          if [ -z "$LATEST_TAG" ]; then
+            echo "## Initial Release" > CHANGELOG.md
+            echo "" >> CHANGELOG.md
+            echo "🎉 First release of DocShot AI!" >> CHANGELOG.md
+            echo "" >> CHANGELOG.md
+            echo "### Features" >> CHANGELOG.md
+            echo "- ✅ Automated screenshot capture with Puppeteer" >> CHANGELOG.md
+            echo "- ✅ Visual diff detection with pixelmatch" >> CHANGELOG.md
+            echo "- ✅ Web UI with diff viewer and approval workflows" >> CHANGELOG.md
+            echo "- ✅ YAML configuration management" >> CHANGELOG.md
+            echo "- ✅ GitHub integration for automation" >> CHANGELOG.md
+            echo "- ✅ Email notifications for change alerts" >> CHANGELOG.md
+            echo "- ✅ Project management dashboard" >> CHANGELOG.md
+            echo "- ✅ S3-compatible storage integration" >> CHANGELOG.md
+          else
+            echo "## Changes since $LATEST_TAG" > CHANGELOG.md
+            echo "" >> CHANGELOG.md
+            git log --pretty=format:"- %s (%an)" $LATEST_TAG..HEAD >> CHANGELOG.md
+          fi
+          
+          # Set output for GitHub release
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          cat CHANGELOG.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.ref_name }}
+          name: "DocShot AI ${{ github.ref_name }}"
+          body: ${{ steps.changelog.outputs.changelog }}
+          draft: false
+          prerelease: false
+          generateReleaseNotes: true
+          
+      - name: Create deployment packages
+        run: |
+          # Create deployment packages
+          mkdir -p release
+          
+          # Web app package
+          cd apps/web
+          tar -czf ../../release/docshot-web-${{ github.ref_name }}.tar.gz .next package.json
+          cd ../..
+          
+          # Worker package
+          cd apps/worker
+          tar -czf ../../release/docshot-worker-${{ github.ref_name }}.tar.gz dist package.json
+          cd ../..
+          
+          # Database package
+          cd packages/database
+          tar -czf ../../release/docshot-database-${{ github.ref_name }}.tar.gz dist package.json
+          cd ../..
+          
+      - name: Upload release assets
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.ref_name }}
+          artifacts: "release/*.tar.gz"
+          allowUpdates: true
+          
+  docker-build:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: create-release
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            docshot/web
+            docshot/worker
+          tags: |
+            type=ref,event=tag
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            
+      - name: Build and push web image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/web/Dockerfile
+          push: true
+          tags: docshot/web:${{ github.ref_name }},docshot/web:latest
+          labels: ${{ steps.meta.outputs.labels }}
+          
+      - name: Build and push worker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/worker/Dockerfile
+          push: true
+          tags: docshot/worker:${{ github.ref_name }},docshot/worker:latest
+          labels: ${{ steps.meta.outputs.labels }}
+
+  notify-release:
+    name: Notify Release
+    runs-on: ubuntu-latest
+    needs: [create-release, docker-build]
+    if: always()
+    
+    steps:
+      - name: Notify success
+        if: needs.create-release.result == 'success' && needs.docker-build.result == 'success'
+        run: |
+          echo "🎉 Release ${{ github.ref_name }} created successfully!"
+          echo "GitHub release: Created with changelog"
+          echo "Docker images: Built and pushed"
+          
+      - name: Notify failure
+        if: needs.create-release.result == 'failure' || needs.docker-build.result == 'failure'
+        run: |
+          echo "❌ Release ${{ github.ref_name }} failed!"
+          echo "GitHub release: ${{ needs.create-release.result }}"
+          echo "Docker build: ${{ needs.docker-build.result }}"
+          exit 1

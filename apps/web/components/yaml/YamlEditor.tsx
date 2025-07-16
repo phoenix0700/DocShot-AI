@@ -64,7 +64,7 @@ export function YamlEditor({
       const result = YamlParser.parseProjectConfig(content);
       
       if (result.success && result.data) {
-        setParsedConfig(result.data);
+        setParsedConfig(result.data as ProjectConfig);
         setErrors([]);
         setWarnings(result.warnings || []);
       } else {

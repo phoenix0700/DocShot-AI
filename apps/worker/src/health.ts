@@ -2,19 +2,10 @@ import { createServer } from 'http';
 import { logger } from './lib/logger';
 import Redis from 'ioredis';
 import { createSupabaseClient } from '@docshot/database';
-import { config } from 'dotenv';
-
-// Load environment variables
-config({ path: '.env.local' });
-
-const supabase = createSupabaseClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!
-);
 
 const PORT = process.env.HEALTH_CHECK_PORT || 3002;
 
-export function startHealthCheckServer() {
+export function startHealthCheckServer(port: number = 3002) {
   const server = createServer(async (req, res) => {
     if (req.url === '/health' && req.method === 'GET') {
       try {
@@ -24,6 +15,10 @@ export function startHealthCheckServer() {
         await redis.quit();
         
         // Check Supabase connection
+        const supabase = createSupabaseClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.SUPABASE_SERVICE_KEY!
+        );
         const { error } = await supabase
           .from('projects')
           .select('id')
@@ -60,8 +55,8 @@ export function startHealthCheckServer() {
     }
   });
   
-  server.listen(PORT, () => {
-    logger.info(`Health check server listening on port ${PORT}`);
+  server.listen(port, () => {
+    logger.info(`Health check server listening on port ${port}`);
   });
   
   return server;

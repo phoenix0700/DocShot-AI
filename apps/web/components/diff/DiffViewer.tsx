@@ -13,11 +13,22 @@ interface DiffViewerProps {
     pixelDiff: number;
     percentageDiff: number;
     totalPixels: number;
+    significant?: boolean;
+    dimensions?: {
+      width: number;
+      height: number;
+    };
   };
   onClose: () => void;
   onApprove?: () => void;
   onReject?: () => void;
   title?: string;
+  screenshotMetadata?: {
+    url?: string;
+    selector?: string;
+    timestamp?: string;
+    viewport?: string;
+  };
 }
 
 type ViewMode = 'side-by-side' | 'overlay' | 'diff-only';
@@ -30,11 +41,13 @@ export function DiffViewer({
   onClose,
   onApprove,
   onReject,
-  title = 'Screenshot Comparison'
+  title = 'Screenshot Comparison',
+  screenshotMetadata
 }: DiffViewerProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('side-by-side');
   const [overlayOpacity, setOverlayOpacity] = useState(50);
   const [loading, setLoading] = useState(true);
+  const [zoom, setZoom] = useState(1);
   const [imageErrors, setImageErrors] = useState({
     current: false,
     previous: false,
@@ -60,15 +73,24 @@ export function DiffViewer({
     className?: string
   ) => (
     <div className={`relative bg-gray-100 rounded-lg overflow-hidden ${className}`}>
-      <Image
-        src={src}
-        alt={alt}
-        width={800}
-        height={600}
-        className="w-full h-auto object-contain"
-        onLoad={handleImageLoad}
-        onError={onError}
-      />
+      <div 
+        className="overflow-auto"
+        style={{ 
+          transform: `scale(${zoom})`,
+          transformOrigin: 'top left',
+          transition: 'transform 0.2s ease'
+        }}
+      >
+        <Image
+          src={src}
+          alt={alt}
+          width={800}
+          height={600}
+          className="w-full h-auto object-contain"
+          onLoad={handleImageLoad}
+          onError={onError}
+        />
+      </div>
     </div>
   );
 
@@ -90,11 +112,41 @@ export function DiffViewer({
         <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-            {hasComparison && diffData && (
-              <p className="text-sm text-gray-500 mt-1">
-                {diffData.percentageDiff.toFixed(2)}% difference ({diffData.pixelDiff.toLocaleString()} pixels changed)
-              </p>
-            )}
+            <div className="mt-1 space-y-1">
+              {hasComparison && diffData && (
+                <div className="flex items-center space-x-4">
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                    diffData.significant !== false && diffData.percentageDiff > 1 
+                      ? 'bg-red-100 text-red-800' 
+                      : 'bg-green-100 text-green-800'
+                  }`}>
+                    {diffData.percentageDiff.toFixed(2)}% changed
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    {diffData.pixelDiff.toLocaleString()} pixels
+                  </span>
+                  {diffData.dimensions && (
+                    <span className="text-sm text-gray-500">
+                      {diffData.dimensions.width}×{diffData.dimensions.height}
+                    </span>
+                  )}
+                </div>
+              )}
+              {screenshotMetadata && (
+                <div className="flex items-center space-x-4 text-sm text-gray-500">
+                  {screenshotMetadata.url && (
+                    <span className="truncate max-w-xs">
+                      📍 {screenshotMetadata.url}
+                    </span>
+                  )}
+                  {screenshotMetadata.selector && (
+                    <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded">
+                      {screenshotMetadata.selector}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
           <button
             onClick={onClose}
@@ -163,6 +215,38 @@ export function DiffViewer({
                   <span className="text-sm text-gray-600 w-8">{overlayOpacity}%</span>
                 </div>
               )}
+
+              {/* Zoom Controls */}
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-600">Zoom:</span>
+                <button
+                  onClick={() => setZoom(Math.max(0.5, zoom - 0.25))}
+                  className="p-1 text-gray-600 hover:text-gray-900 transition-colors"
+                  disabled={zoom <= 0.5}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                  </svg>
+                </button>
+                <span className="text-sm text-gray-600 w-12 text-center">
+                  {Math.round(zoom * 100)}%
+                </span>
+                <button
+                  onClick={() => setZoom(Math.min(3, zoom + 0.25))}
+                  className="p-1 text-gray-600 hover:text-gray-900 transition-colors"
+                  disabled={zoom >= 3}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setZoom(1)}
+                  className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
+                >
+                  Reset
+                </button>
+              </div>
             </div>
 
             {/* Action Buttons */}

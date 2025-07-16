@@ -3,11 +3,6 @@ import { auth } from '@clerk/nextjs';
 import { createSupabaseClient } from '@docshot/database';
 import { createQueueManager } from '@docshot/shared';
 
-const supabase = createSupabaseClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!
-);
-
 export async function POST(request: NextRequest) {
   try {
     const { userId } = auth();
@@ -15,6 +10,11 @@ export async function POST(request: NextRequest) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const supabase = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_KEY!
+    );
 
     const { projectId } = await request.json();
     

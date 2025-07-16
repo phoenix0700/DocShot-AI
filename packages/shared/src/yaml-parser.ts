@@ -56,11 +56,11 @@ export class YamlParser {
     }
   }
 
-  static parseProjectConfig(yamlContent: string): ParseResult<z.infer<typeof ProjectConfigSchema>> {
+  static parseProjectConfig(yamlContent: string) {
     return this.parseYaml(yamlContent, ProjectConfigSchema);
   }
 
-  static parseScreenshotConfig(yamlContent: string): ParseResult<z.infer<typeof ScreenshotConfigSchema>> {
+  static parseScreenshotConfig(yamlContent: string) {
     return this.parseYaml(yamlContent, ScreenshotConfigSchema);
   }
 
@@ -113,7 +113,7 @@ export class YamlParser {
     return warnings;
   }
 
-  static validateAndNormalizeConfig(config: any): ParseResult<z.infer<typeof ProjectConfigSchema>> {
+  static validateAndNormalizeConfig(config: any) {
     // Pre-processing to handle common format variations
     const normalized = this.normalizeConfig(config);
     return this.parseProjectConfig(yaml.dump(normalized));

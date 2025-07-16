@@ -75,7 +75,7 @@ const notificationWorker = new Worker('notification', notificationProcessor, {
 
 // Start health check server on alternative port
 const healthPort = process.env.WORKER_HEALTH_PORT || 3002;
-startHealthCheckServer(healthPort);
+startHealthCheckServer(Number(healthPort));
 
 logger.info('DocShot AI Worker started', {
   screenshotConcurrency: screenshotWorker.concurrency,

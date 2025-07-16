@@ -4,6 +4,33 @@ import { compareImageUrls } from '../lib/pixelmatch';
 import { createSupabaseClient } from '@docshot/database';
 import Redis from 'ioredis';
 
+// Retry utility with exponential backoff
+const retryWithBackoff = async <T>(
+  fn: () => Promise<T>,
+  maxRetries: number,
+  baseDelay: number
+): Promise<T> => {
+  let lastError: Error;
+  
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error('Unknown error');
+      
+      if (attempt === maxRetries) {
+        throw lastError;
+      }
+      
+      const delay = baseDelay * Math.pow(2, attempt - 1);
+      console.log(`Diff attempt ${attempt} failed, retrying in ${delay}ms:`, lastError.message);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+  
+  throw lastError!;
+};
+
 // Create Supabase client lazily to ensure environment variables are loaded
 const getSupabaseClient = () => {
   return createSupabaseClient(
@@ -26,13 +53,17 @@ export const diffProcessor = async (job: Job) => {
     job.updateProgress(10);
     console.log(`Processing diff job for screenshot ${data.screenshotId}`);
     
-    // Compare images
+    // Compare images with retry logic
     job.updateProgress(30);
-    const diffResult = await compareImageUrls(
-      data.currentImageUrl,
-      data.previousImageUrl,
-      { threshold: 0.1 }, // Default threshold
-      1.0 // Significance threshold (1% change)
+    const diffResult = await retryWithBackoff(
+      () => compareImageUrls(
+        data.currentImageUrl,
+        data.previousImageUrl,
+        { threshold: 0.1 }, // Default threshold
+        1.0 // Significance threshold (1% change)
+      ),
+      3,
+      1000
     );
     
     job.updateProgress(60);
@@ -42,6 +73,7 @@ export const diffProcessor = async (job: Job) => {
     
     // Upload diff image if changes detected
     if (diffResult.significant && diffResult.diffImageBuffer) {
+      const supabase = getSupabaseClient();
       const { data: screenshot } = await supabase
         .from('screenshots')
         .select('project_id')
@@ -49,6 +81,7 @@ export const diffProcessor = async (job: Job) => {
         .single();
       
       if (screenshot) {
+        const storage = getStorageService();
         const uploadResult = await storage.uploadDiffImage(
           screenshot.project_id,
           data.screenshotId,
@@ -70,21 +103,18 @@ export const diffProcessor = async (job: Job) => {
     
     // Create notification if significant change detected
     if (diffResult.significant) {
+      const supabase = getSupabaseClient();
+      const screenshotData = await supabase
+        .from('screenshots')
+        .select('project_id')
+        .eq('id', data.screenshotId)
+        .single();
+      
       await notificationQueue.add('diff_detected', {
         type: 'diff_detected',
         screenshotId: data.screenshotId,
-        projectId: (await supabase
-          .from('screenshots')
-          .select('project_id')
-          .eq('id', data.screenshotId)
-          .single()).data?.project_id,
+        projectId: screenshotData.data?.project_id || '',
         message: `Visual difference detected: ${diffResult.percentageDiff.toFixed(2)}% of pixels changed`,
-        diffImageUrl,
-        diffData: {
-          pixelDiff: diffResult.pixelDiff,
-          percentageDiff: diffResult.percentageDiff,
-          totalPixels: diffResult.totalPixels,
-        },
       });
       
       console.log(`Notification queued for significant difference: ${diffResult.percentageDiff.toFixed(2)}%`);
@@ -102,14 +132,17 @@ export const diffProcessor = async (job: Job) => {
     
     // Create failure notification
     try {
+      const supabase = getSupabaseClient();
+      const screenshotData = await supabase
+        .from('screenshots')
+        .select('project_id')
+        .eq('id', data.screenshotId)
+        .single();
+      
       await notificationQueue.add('diff_failed', {
         type: 'screenshot_failed',
         screenshotId: data.screenshotId,
-        projectId: (await supabase
-          .from('screenshots')
-          .select('project_id')
-          .eq('id', data.screenshotId)
-          .single()).data?.project_id,
+        projectId: screenshotData.data?.project_id || '',
         message: `Failed to process visual diff: ${error instanceof Error ? error.message : 'Unknown error'}`,
       });
     } catch (notificationError) {

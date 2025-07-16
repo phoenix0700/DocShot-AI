@@ -103,8 +103,26 @@ export const DiffJobDataSchema = z.object({
 });
 
 export const NotificationJobDataSchema = z.object({
-  type: z.enum(['screenshot_captured', 'diff_detected', 'screenshot_failed']),
+  type: z.enum(['screenshot_captured', 'diff_detected', 'screenshot_failed', 'project_summary', 'bulk_changes']),
   projectId: z.string().uuid(),
   screenshotId: z.string().uuid(),
   message: z.string(),
+  diffImageUrl: z.string().optional(),
+  diffData: z.object({
+    pixelDiff: z.number(),
+    percentageDiff: z.number(),
+    totalPixels: z.number(),
+  }).optional(),
+  summary: z.object({
+    totalScreenshots: z.number(),
+    changesDetected: z.number(),
+    pendingApproval: z.number(),
+    failed: z.number(),
+  }).optional(),
+  changes: z.array(z.object({
+    screenshotName: z.string(),
+    percentageDiff: z.number(),
+    url: z.string().optional(),
+  })).optional(),
+  period: z.string().optional(),
 });
