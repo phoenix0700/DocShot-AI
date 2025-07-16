@@ -34,14 +34,21 @@ export function ApprovalWorkflow({
     try {
       setIsProcessing(true);
       
-      const { error } = await supabase.rpc('update_screenshot_approval', {
-        p_screenshot_id: screenshotId,
-        p_action: 'approved',
-        p_user_id: userId,
+      const response = await fetch('/api/screenshots/approve', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          screenshotId,
+          action: 'approved',
+        }),
       });
 
-      if (error) {
-        throw error;
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to approve screenshot');
       }
 
       onStatusChange('approved');
@@ -62,15 +69,22 @@ export function ApprovalWorkflow({
     try {
       setIsProcessing(true);
       
-      const { error } = await supabase.rpc('update_screenshot_approval', {
-        p_screenshot_id: screenshotId,
-        p_action: 'rejected',
-        p_user_id: userId,
-        p_reason: rejectionReason.trim(),
+      const response = await fetch('/api/screenshots/approve', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          screenshotId,
+          action: 'rejected',
+          reason: rejectionReason.trim(),
+        }),
       });
 
-      if (error) {
-        throw error;
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to reject screenshot');
       }
 
       onStatusChange('rejected');
@@ -88,14 +102,21 @@ export function ApprovalWorkflow({
     try {
       setIsProcessing(true);
       
-      const { error } = await supabase.rpc('update_screenshot_approval', {
-        p_screenshot_id: screenshotId,
-        p_action: 'pending',
-        p_user_id: userId,
+      const response = await fetch('/api/screenshots/approve', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          screenshotId,
+          action: 'pending',
+        }),
       });
 
-      if (error) {
-        throw error;
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to reset screenshot status');
       }
 
       onStatusChange('pending');

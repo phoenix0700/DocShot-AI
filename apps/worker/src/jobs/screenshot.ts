@@ -1,10 +1,21 @@
 import { Job } from 'bullmq';
 import { ScreenshotJobDataSchema, createStorageService } from '@docshot/shared';
 import { captureScreenshot } from '../lib/puppeteer';
-import { supabase } from '@docshot/database';
-import { GitHubIntegrationService } from '../services/github-integration';
+import { createSupabaseClient } from '@docshot/database';
+// import { GitHubIntegrationService } from '../services/github-integration';
 
-const storage = createStorageService();
+// Create Supabase client lazily to ensure environment variables are loaded
+const getSupabaseClient = () => {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+    process.env.SUPABASE_SERVICE_KEY || ''
+  );
+};
+
+// Create storage service lazily to ensure environment variables are loaded
+const getStorageService = () => {
+  return createStorageService();
+};
 
 export const screenshotProcessor = async (job: Job) => {
   const data = ScreenshotJobDataSchema.parse(job.data);
@@ -25,6 +36,7 @@ export const screenshotProcessor = async (job: Job) => {
     console.log(`Screenshot captured for ${data.url}, size: ${result.buffer.length} bytes`);
     
     // Upload to storage
+    const storage = getStorageService();
     const uploadResult = await storage.uploadScreenshot(
       data.projectId,
       data.screenshotId,
@@ -41,6 +53,7 @@ export const screenshotProcessor = async (job: Job) => {
     console.log(`Screenshot uploaded to ${uploadResult.key}`);
     
     // Update database
+    const supabase = getSupabaseClient();
     const { error } = await supabase
       .from('screenshots')
       .update({
@@ -57,17 +70,18 @@ export const screenshotProcessor = async (job: Job) => {
     // Upload to GitHub if configured
     job.updateProgress(90);
     try {
-      const githubService = await GitHubIntegrationService.fromProjectConfig(data.projectId);
-      if (githubService) {
-        const filename = `${data.screenshotId}-${Date.now()}.png`;
-        await githubService.uploadScreenshot(
-          data.projectId,
-          data.screenshotId,
-          result.buffer,
-          filename
-        );
-        console.log(`Screenshot uploaded to GitHub: ${filename}`);
-      }
+      // const githubService = await GitHubIntegrationService.fromProjectConfig(data.projectId);
+      // if (githubService) {
+      //   const filename = `${data.screenshotId}-${Date.now()}.png`;
+      //   await githubService.uploadScreenshot(
+      //     data.projectId,
+      //     data.screenshotId,
+      //     result.buffer,
+      //     filename
+      //   );
+      //   console.log(`Screenshot uploaded to GitHub: ${filename}`);
+      // }
+      console.log('GitHub integration temporarily disabled');
     } catch (githubError) {
       console.error('GitHub upload failed (non-fatal):', githubError);
       // Don't fail the job if GitHub upload fails
@@ -101,6 +115,7 @@ export const screenshotProcessor = async (job: Job) => {
     
     // Update database with failure status
     try {
+      const supabase = getSupabaseClient();
       await supabase
         .from('screenshots')
         .update({

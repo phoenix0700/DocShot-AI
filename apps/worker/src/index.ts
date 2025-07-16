@@ -1,3 +1,31 @@
+// Load environment variables FIRST before any other imports
+import { config } from 'dotenv';
+import path from 'path';
+
+// Try multiple paths for .env.local
+const envPaths = [
+  path.resolve(__dirname, '../../../.env.local'),
+  path.resolve(__dirname, '../../.env.local'),
+  path.resolve(__dirname, '.env.local'),
+  path.resolve(__dirname, '.env'),
+];
+
+for (const envPath of envPaths) {
+  try {
+    config({ path: envPath });
+    console.log(`Loaded environment from: ${envPath}`);
+    break;
+  } catch (error) {
+    // Continue to next path
+  }
+}
+
+console.log('Environment variables loaded:');
+console.log('NEXT_PUBLIC_SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'SET' : 'NOT SET');
+console.log('SUPABASE_SERVICE_KEY:', process.env.SUPABASE_SERVICE_KEY ? 'SET' : 'NOT SET');
+console.log('REDIS_URL:', process.env.REDIS_URL ? 'SET' : 'NOT SET');
+
+// Now safe to import modules that may use environment variables
 import { Worker } from 'bullmq';
 import Redis from 'ioredis';
 import { screenshotProcessor } from './jobs/screenshot';
@@ -6,7 +34,9 @@ import { notificationProcessor } from './jobs/notification';
 import { startHealthCheckServer } from './health';
 import { logger } from './lib/logger';
 
-const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
+const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
+  maxRetriesPerRequest: null,
+});
 
 const screenshotWorker = new Worker('screenshot', screenshotProcessor, {
   connection: redis,
@@ -43,8 +73,9 @@ const notificationWorker = new Worker('notification', notificationProcessor, {
   });
 });
 
-// Start health check server
-startHealthCheckServer();
+// Start health check server on alternative port
+const healthPort = process.env.WORKER_HEALTH_PORT || 3002;
+startHealthCheckServer(healthPort);
 
 logger.info('DocShot AI Worker started', {
   screenshotConcurrency: screenshotWorker.concurrency,

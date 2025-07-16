@@ -27,6 +27,7 @@ export function ProjectDetail({ projectId, userId }: ProjectDetailProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [screenshotCount, setScreenshotCount] = useState(0);
+  const [runningScreenshots, setRunningScreenshots] = useState(false);
 
   useEffect(() => {
     loadProject();
@@ -72,6 +73,36 @@ export function ProjectDetail({ projectId, userId }: ProjectDetailProps) {
       setError('Failed to load project details. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const runScreenshots = async () => {
+    try {
+      setError(null);
+      setRunningScreenshots(true);
+      
+      const response = await fetch('/api/screenshots/run', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ projectId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to run screenshots');
+      }
+
+      // Refresh the project data to see updated status
+      await loadProject();
+      
+    } catch (err) {
+      console.error('Error running screenshots:', err);
+      setError(err instanceof Error ? err.message : 'Failed to run screenshots');
+    } finally {
+      setRunningScreenshots(false);
     }
   };
 
@@ -133,8 +164,12 @@ export function ProjectDetail({ projectId, userId }: ProjectDetailProps) {
                 Configure
               </Button>
             </Link>
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              Run Screenshots
+            <Button 
+              className="bg-blue-600 hover:bg-blue-700"
+              onClick={runScreenshots}
+              disabled={runningScreenshots}
+            >
+              {runningScreenshots ? 'Running...' : 'Run Screenshots'}
             </Button>
           </div>
         </div>

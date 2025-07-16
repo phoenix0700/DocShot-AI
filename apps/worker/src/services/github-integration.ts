@@ -1,6 +1,17 @@
 import { GitHubIntegration, GitHubConfig } from '@docshot/integrations';
-import { supabase } from '@docshot/database';
+import { createSupabaseClient } from '@docshot/database';
 import { logger } from '../lib/logger';
+
+// Create Supabase client lazily to ensure environment variables are loaded
+const getSupabaseClient = () => {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+    throw new Error('Missing required environment variables: NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_KEY');
+  }
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_KEY
+  );
+};
 
 export class GitHubIntegrationService {
   private githubIntegration: GitHubIntegration | null = null;
@@ -35,6 +46,7 @@ export class GitHubIntegrationService {
       const url = await this.githubIntegration.uploadScreenshot(imageBuffer, filename);
 
       // Update the screenshot record with GitHub URL
+      const supabase = getSupabaseClient();
       const { error } = await supabase
         .from('screenshots')
         .update({
@@ -89,6 +101,7 @@ export class GitHubIntegrationService {
   static async fromProjectConfig(projectId: string): Promise<GitHubIntegrationService | null> {
     try {
       // Fetch project configuration from database
+      const supabase = getSupabaseClient();
       const { data: project, error } = await supabase
         .from('projects')
         .select('config')

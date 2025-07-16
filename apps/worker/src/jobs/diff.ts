@@ -1,10 +1,21 @@
 import { Job, Queue } from 'bullmq';
 import { DiffJobDataSchema, createStorageService } from '@docshot/shared';
 import { compareImageUrls } from '../lib/pixelmatch';
-import { supabase } from '@docshot/database';
+import { createSupabaseClient } from '@docshot/database';
 import Redis from 'ioredis';
 
-const storage = createStorageService();
+// Create Supabase client lazily to ensure environment variables are loaded
+const getSupabaseClient = () => {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+    process.env.SUPABASE_SERVICE_KEY || ''
+  );
+};
+
+// Create storage service lazily to ensure environment variables are loaded
+const getStorageService = () => {
+  return createStorageService();
+};
 const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
 const notificationQueue = new Queue('notification', { connection: redis });
 

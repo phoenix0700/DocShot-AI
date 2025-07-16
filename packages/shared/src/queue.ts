@@ -1,4 +1,4 @@
-import { Queue, QueueOptions, JobOptions } from 'bullmq';
+import { Queue } from 'bullmq';
 import Redis from 'ioredis';
 import { z } from 'zod';
 import { ScreenshotJobDataSchema, DiffJobDataSchema, NotificationJobDataSchema } from './schemas';
@@ -11,13 +11,13 @@ export interface QueueConfig {
     db?: number;
     url?: string;
   };
-  defaultJobOptions?: JobOptions;
+  defaultJobOptions?: any;
 }
 
 export class QueueManager {
   private redis: Redis;
   private queues: Map<string, Queue> = new Map();
-  private defaultJobOptions: JobOptions;
+  private defaultJobOptions: any;
 
   constructor(config: QueueConfig) {
     this.redis = config.redis.url 
@@ -41,7 +41,7 @@ export class QueueManager {
     };
   }
 
-  private getQueue(name: string, options?: QueueOptions): Queue {
+  private getQueue(name: string, options?: any): Queue {
     if (!this.queues.has(name)) {
       const queue = new Queue(name, {
         connection: this.redis,
@@ -56,7 +56,7 @@ export class QueueManager {
   // Screenshot queue methods
   async addScreenshotJob(
     data: z.infer<typeof ScreenshotJobDataSchema>,
-    options?: JobOptions
+    options?: any
   ) {
     const validatedData = ScreenshotJobDataSchema.parse(data);
     const queue = this.getQueue('screenshot');
@@ -71,7 +71,7 @@ export class QueueManager {
   async addBulkScreenshotJobs(
     jobs: Array<{
       data: z.infer<typeof ScreenshotJobDataSchema>;
-      options?: JobOptions;
+      options?: any;
     }>
   ) {
     const queue = this.getQueue('screenshot');
@@ -91,7 +91,7 @@ export class QueueManager {
   // Diff queue methods
   async addDiffJob(
     data: z.infer<typeof DiffJobDataSchema>,
-    options?: JobOptions
+    options?: any
   ) {
     const validatedData = DiffJobDataSchema.parse(data);
     const queue = this.getQueue('diff');
@@ -105,7 +105,7 @@ export class QueueManager {
   // Notification queue methods
   async addNotificationJob(
     data: z.infer<typeof NotificationJobDataSchema>,
-    options?: JobOptions
+    options?: any
   ) {
     const validatedData = NotificationJobDataSchema.parse(data);
     const queue = this.getQueue('notification');
@@ -279,4 +279,4 @@ export function createQueueManager(config?: Partial<QueueConfig>): QueueManager 
 
 // Export types
 export type { QueueConfig };
-export { Queue, QueueOptions, JobOptions } from 'bullmq';
+export { Queue } from 'bullmq';

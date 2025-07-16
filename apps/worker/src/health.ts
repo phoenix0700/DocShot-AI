@@ -1,9 +1,18 @@
 import { createServer } from 'http';
 import { logger } from './lib/logger';
 import Redis from 'ioredis';
-import { supabase } from '@docshot/database';
+import { createSupabaseClient } from '@docshot/database';
+import { config } from 'dotenv';
 
-const PORT = process.env.HEALTH_CHECK_PORT || 3001;
+// Load environment variables
+config({ path: '.env.local' });
+
+const supabase = createSupabaseClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_KEY!
+);
+
+const PORT = process.env.HEALTH_CHECK_PORT || 3002;
 
 export function startHealthCheckServer() {
   const server = createServer(async (req, res) => {

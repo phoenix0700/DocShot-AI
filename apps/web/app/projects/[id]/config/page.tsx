@@ -1,6 +1,6 @@
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
-import { ProjectConfig } from '../../../components/projects/ProjectConfig';
+import { ProjectConfig } from '../../../../components/projects/ProjectConfig';
 
 interface ProjectConfigPageProps {
   params: {

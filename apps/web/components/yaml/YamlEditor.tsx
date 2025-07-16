@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { YamlParser, ProjectConfig } from '@docshot/shared';
+import { YamlParser } from '@docshot/shared/src/yaml-parser';
+import type { ProjectConfig } from '@docshot/shared';
 import { Button } from '../ui/Button';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
 

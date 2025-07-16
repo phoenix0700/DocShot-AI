@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { supabase } from '../../lib/supabase';
 import { YamlEditor } from '../yaml/YamlEditor';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
-import { ProjectConfig as ProjectConfigType, createQueueManager } from '@docshot/shared';
+import type { ProjectConfig as ProjectConfigType } from '@docshot/shared';
 
 interface Project {
   id: string;
@@ -164,27 +164,8 @@ settings:
         }
       }
 
-      // Optionally, queue screenshot jobs
-      if (config.screenshots.length > 0) {
-        try {
-          const queueManager = createQueueManager();
-          
-          const jobs = config.screenshots.map(screenshot => ({
-            data: {
-              projectId,
-              screenshotId: 'temp', // This would be the actual screenshot ID from insert
-              url: screenshot.url,
-              selector: screenshot.selector,
-              viewport: screenshot.viewport || config.project.defaultViewport,
-            }
-          }));
-
-          // Note: In a real implementation, you'd get the actual screenshot IDs
-          // await queueManager.addBulkScreenshotJobs(jobs);
-        } catch (queueError) {
-          console.warn('Warning: Could not queue screenshot jobs:', queueError);
-        }
-      }
+      // Screenshot jobs will be queued via API endpoints
+      // This is handled by the server-side API routes
 
     } catch (error) {
       console.error('Error creating screenshots from config:', error);

@@ -1,8 +1,16 @@
 import { Job } from 'bullmq';
 import { NotificationJobDataSchema } from '@docshot/shared';
-import { supabase } from '@docshot/database';
+import { createSupabaseClient } from '@docshot/database';
 import { EmailService } from '../services/email';
 import { logger } from '../lib/logger';
+
+// Create Supabase client lazily to ensure environment variables are loaded
+const getSupabaseClient = () => {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+    process.env.SUPABASE_SERVICE_KEY || ''
+  );
+};
 
 const emailService = new EmailService();
 

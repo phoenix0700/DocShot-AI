@@ -334,6 +334,15 @@ export function createStorageService(config?: Partial<StorageConfig>): StorageSe
     forcePathStyle: process.env.S3_FORCE_PATH_STYLE === 'true',
   };
 
+  console.log('Creating storage service with config:', {
+    bucket: defaultConfig.bucket,
+    region: defaultConfig.region,
+    endpoint: defaultConfig.endpoint,
+    accessKeyId: defaultConfig.accessKeyId ? 'SET' : 'NOT SET',
+    secretAccessKey: defaultConfig.secretAccessKey ? 'SET' : 'NOT SET',
+    forcePathStyle: defaultConfig.forcePathStyle,
+  });
+
   return new StorageService({ ...defaultConfig, ...config });
 }
 
