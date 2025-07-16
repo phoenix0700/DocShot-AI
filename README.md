@@ -219,11 +219,17 @@ See `.env.production.template` for production configuration:
 # Test your production services
 pnpm test:services
 
+# Quick production validation
+pnpm validate:production
+
+# Full end-to-end testing
+pnpm test:e2e
+
 # Deploy everything
 pnpm deploy:production
 ```
 
-See `PRODUCTION_SETUP.md` for detailed instructions.
+See `PRODUCTION_SETUP.md` for detailed instructions and `PRODUCTION_TESTING.md` for comprehensive testing guides.
 
 ## Contributing
 
