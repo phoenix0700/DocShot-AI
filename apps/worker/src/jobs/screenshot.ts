@@ -12,23 +12,23 @@ const retryWithBackoff = async <T>(
   baseDelay: number
 ): Promise<T> => {
   let lastError: Error;
-  
+
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       return await fn();
     } catch (error) {
       lastError = error instanceof Error ? error : new Error('Unknown error');
-      
+
       if (attempt === maxRetries) {
         throw lastError;
       }
-      
+
       const delay = baseDelay * Math.pow(2, attempt - 1);
       console.log(`Attempt ${attempt} failed, retrying in ${delay}ms:`, lastError.message);
-      await new Promise(resolve => setTimeout(resolve, delay));
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
-  
+
   throw lastError!;
 };
 
@@ -52,27 +52,28 @@ export const screenshotProcessor = async (job: Job) => {
   const data = ScreenshotJobDataSchema.parse(job.data);
   const maxRetries = 3;
   const attempt = job.attemptsMade + 1;
-  
+
   try {
     job.updateProgress(10);
     console.log(`Processing screenshot job for ${data.url} (attempt ${attempt}/${maxRetries})`);
-    
+
     // Capture screenshot with retry logic
     job.updateProgress(30);
     const result = await retryWithBackoff(
-      () => captureScreenshot({
-        url: data.url,
-        selector: data.selector,
-        viewport: data.viewport,
-        waitForTimeout: data.selector ? 2000 : 1000, // Extra wait for element screenshots
-      }),
+      () =>
+        captureScreenshot({
+          url: data.url,
+          selector: data.selector,
+          viewport: data.viewport,
+          waitForTimeout: data.selector ? 2000 : 1000, // Extra wait for element screenshots
+        }),
       3,
       1000
     );
-    
+
     job.updateProgress(60);
     console.log(`Screenshot captured for ${data.url}, size: ${result.buffer.length} bytes`);
-    
+
     // Upload to storage
     const storage = getStorageService();
     const uploadResult = await storage.uploadScreenshot(
@@ -86,10 +87,10 @@ export const screenshotProcessor = async (job: Job) => {
         timestamp: result.metadata.timestamp.toString(),
       }
     );
-    
+
     job.updateProgress(80);
     console.log(`Screenshot uploaded to ${uploadResult.key}`);
-    
+
     // Update database
     const supabase = getSupabaseClient();
     const { error } = await supabase
@@ -100,11 +101,11 @@ export const screenshotProcessor = async (job: Job) => {
         updated_at: new Date().toISOString(),
       })
       .eq('id', data.screenshotId);
-    
+
     if (error) {
       throw new Error(`Database update failed: ${error.message}`);
     }
-    
+
     // Upload to GitHub if configured
     job.updateProgress(90);
     try {
@@ -124,10 +125,10 @@ export const screenshotProcessor = async (job: Job) => {
       console.error('GitHub upload failed (non-fatal):', githubError);
       // Don't fail the job if GitHub upload fails
     }
-    
+
     job.updateProgress(100);
     console.log(`Screenshot job completed for ${data.url}`);
-    
+
     // Queue notification for successful capture
     try {
       await notificationQueue.add('screenshot_captured', {
@@ -139,9 +140,9 @@ export const screenshotProcessor = async (job: Job) => {
     } catch (notifError) {
       console.error('Failed to queue notification:', notifError);
     }
-    
-    return { 
-      success: true, 
+
+    return {
+      success: true,
       imageSize: result.buffer.length,
       imageUrl: uploadResult.publicUrl,
       key: uploadResult.key,
@@ -149,7 +150,7 @@ export const screenshotProcessor = async (job: Job) => {
     };
   } catch (error) {
     console.error(`Screenshot failed for ${data.url}:`, error);
-    
+
     // Update database with failure status
     try {
       const supabase = getSupabaseClient();
@@ -163,7 +164,7 @@ export const screenshotProcessor = async (job: Job) => {
     } catch (dbError) {
       console.error('Failed to update database with error status:', dbError);
     }
-    
+
     // Queue notification for failure
     try {
       await notificationQueue.add('screenshot_failed', {
@@ -175,7 +176,7 @@ export const screenshotProcessor = async (job: Job) => {
     } catch (notifError) {
       console.error('Failed to queue failure notification:', notifError);
     }
-    
+
     throw error;
   }
 };

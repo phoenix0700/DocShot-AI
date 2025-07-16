@@ -1,4 +1,10 @@
-import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+  DeleteObjectCommand,
+  HeadObjectCommand,
+} from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import crypto from 'crypto';
 
@@ -47,10 +53,13 @@ export class StorageService {
 
     const s3Config: any = {
       region: config.region || 'us-east-1',
-      credentials: config.accessKeyId && config.secretAccessKey ? {
-        accessKeyId: config.accessKeyId,
-        secretAccessKey: config.secretAccessKey,
-      } : undefined,
+      credentials:
+        config.accessKeyId && config.secretAccessKey
+          ? {
+              accessKeyId: config.accessKeyId,
+              secretAccessKey: config.secretAccessKey,
+            }
+          : undefined,
     };
 
     if (config.endpoint) {
@@ -65,14 +74,14 @@ export class StorageService {
    * Upload a buffer or stream to S3
    */
   async upload(
-    key: string, 
+    key: string,
     body: Buffer | Uint8Array | string,
     options: UploadOptions = {}
   ): Promise<UploadResult> {
     try {
       const contentType = options.contentType || this.guessContentType(key);
       const metadata = options.metadata || {};
-      
+
       const command = new PutObjectCommand({
         Bucket: this.bucket,
         Key: key,
@@ -84,10 +93,12 @@ export class StorageService {
       });
 
       const result = await this.s3.send(command);
-      
-      const size = Buffer.isBuffer(body) ? body.length : 
-                  typeof body === 'string' ? Buffer.byteLength(body) : 
-                  body.length;
+
+      const size = Buffer.isBuffer(body)
+        ? body.length
+        : typeof body === 'string'
+          ? Buffer.byteLength(body)
+          : body.length;
 
       return {
         key,
@@ -98,7 +109,9 @@ export class StorageService {
         metadata,
       };
     } catch (error) {
-      throw new Error(`Failed to upload ${key}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to upload ${key}: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -166,14 +179,16 @@ export class StorageService {
       });
 
       const result = await this.s3.send(command);
-      
+
       if (!result.Body) {
         throw new Error('No body in response');
       }
 
       return Buffer.from(await result.Body.transformToByteArray());
     } catch (error) {
-      throw new Error(`Failed to download ${key}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to download ${key}: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -189,7 +204,9 @@ export class StorageService {
 
       await this.s3.send(command);
     } catch (error) {
-      throw new Error(`Failed to delete ${key}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to delete ${key}: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -224,7 +241,7 @@ export class StorageService {
       });
 
       const result = await this.s3.send(command);
-      
+
       return {
         key,
         size: result.ContentLength,
@@ -292,19 +309,19 @@ export class StorageService {
   private guessContentType(key: string): string {
     const ext = key.split('.').pop()?.toLowerCase();
     const mimeTypes: Record<string, string> = {
-      'png': 'image/png',
-      'jpg': 'image/jpeg',
-      'jpeg': 'image/jpeg',
-      'gif': 'image/gif',
-      'webp': 'image/webp',
-      'pdf': 'application/pdf',
-      'json': 'application/json',
-      'txt': 'text/plain',
-      'html': 'text/html',
-      'css': 'text/css',
-      'js': 'application/javascript',
+      png: 'image/png',
+      jpg: 'image/jpeg',
+      jpeg: 'image/jpeg',
+      gif: 'image/gif',
+      webp: 'image/webp',
+      pdf: 'application/pdf',
+      json: 'application/json',
+      txt: 'text/plain',
+      html: 'text/html',
+      css: 'text/css',
+      js: 'application/javascript',
     };
-    
+
     return mimeTypes[ext || ''] || 'application/octet-stream';
   }
 
@@ -316,7 +333,7 @@ export class StorageService {
     // In production, you'd want to use S3's lifecycle policies
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - olderThanDays);
-    
+
     // TODO: Implement S3 list objects and delete old files
     // For now, return 0 as a placeholder
     return 0;

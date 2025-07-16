@@ -42,7 +42,7 @@ export function DiffViewer({
   onApprove,
   onReject,
   title = 'Screenshot Comparison',
-  screenshotMetadata
+  screenshotMetadata,
 }: DiffViewerProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('side-by-side');
   const [overlayOpacity, setOverlayOpacity] = useState(50);
@@ -62,7 +62,7 @@ export function DiffViewer({
   };
 
   const handleImageError = (imageType: 'current' | 'previous' | 'diff') => {
-    setImageErrors(prev => ({ ...prev, [imageType]: true }));
+    setImageErrors((prev) => ({ ...prev, [imageType]: true }));
     setLoading(false);
   };
 
@@ -73,12 +73,12 @@ export function DiffViewer({
     className?: string
   ) => (
     <div className={`relative bg-gray-100 rounded-lg overflow-hidden ${className}`}>
-      <div 
+      <div
         className="overflow-auto"
-        style={{ 
+        style={{
           transform: `scale(${zoom})`,
           transformOrigin: 'top left',
-          transition: 'transform 0.2s ease'
+          transition: 'transform 0.2s ease',
         }}
       >
         <Image
@@ -97,8 +97,18 @@ export function DiffViewer({
   const renderErrorState = (message: string) => (
     <div className="flex items-center justify-center h-64 bg-gray-100 rounded-lg">
       <div className="text-center">
-        <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.863-.833-2.633 0L4.18 16.5c-.77.833.192 2.5 1.732 2.5z" />
+        <svg
+          className="w-12 h-12 text-gray-400 mx-auto mb-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.863-.833-2.633 0L4.18 16.5c-.77.833.192 2.5 1.732 2.5z"
+          />
         </svg>
         <p className="text-gray-500">{message}</p>
       </div>
@@ -115,11 +125,13 @@ export function DiffViewer({
             <div className="mt-1 space-y-1">
               {hasComparison && diffData && (
                 <div className="flex items-center space-x-4">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    diffData.significant !== false && diffData.percentageDiff > 1 
-                      ? 'bg-red-100 text-red-800' 
-                      : 'bg-green-100 text-green-800'
-                  }`}>
+                  <span
+                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      diffData.significant !== false && diffData.percentageDiff > 1
+                        ? 'bg-red-100 text-red-800'
+                        : 'bg-green-100 text-green-800'
+                    }`}
+                  >
                     {diffData.percentageDiff.toFixed(2)}% changed
                   </span>
                   <span className="text-sm text-gray-500">
@@ -135,9 +147,7 @@ export function DiffViewer({
               {screenshotMetadata && (
                 <div className="flex items-center space-x-4 text-sm text-gray-500">
                   {screenshotMetadata.url && (
-                    <span className="truncate max-w-xs">
-                      📍 {screenshotMetadata.url}
-                    </span>
+                    <span className="truncate max-w-xs">📍 {screenshotMetadata.url}</span>
                   )}
                   {screenshotMetadata.selector && (
                     <span className="font-mono text-xs bg-gray-100 px-2 py-1 rounded">
@@ -148,12 +158,14 @@ export function DiffViewer({
               )}
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -225,7 +237,12 @@ export function DiffViewer({
                   disabled={zoom <= 0.5}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M20 12H4"
+                    />
                   </svg>
                 </button>
                 <span className="text-sm text-gray-600 w-12 text-center">
@@ -237,7 +254,12 @@ export function DiffViewer({
                   disabled={zoom >= 3}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    />
                   </svg>
                 </button>
                 <button
@@ -250,27 +272,27 @@ export function DiffViewer({
             </div>
 
             {/* Action Buttons */}
-            {(onApprove || onReject) && hasComparison && diffData && diffData.percentageDiff > 0 && (
-              <div className="flex items-center space-x-3">
-                {onReject && (
-                  <Button
-                    onClick={onReject}
-                    variant="outline"
-                    className="text-red-600 hover:text-red-700 border-red-200"
-                  >
-                    Reject Changes
-                  </Button>
-                )}
-                {onApprove && (
-                  <Button
-                    onClick={onApprove}
-                    className="bg-green-600 hover:bg-green-700"
-                  >
-                    Approve Changes
-                  </Button>
-                )}
-              </div>
-            )}
+            {(onApprove || onReject) &&
+              hasComparison &&
+              diffData &&
+              diffData.percentageDiff > 0 && (
+                <div className="flex items-center space-x-3">
+                  {onReject && (
+                    <Button
+                      onClick={onReject}
+                      variant="outline"
+                      className="text-red-600 hover:text-red-700 border-red-200"
+                    >
+                      Reject Changes
+                    </Button>
+                  )}
+                  {onApprove && (
+                    <Button onClick={onApprove} className="bg-green-600 hover:bg-green-700">
+                      Approve Changes
+                    </Button>
+                  )}
+                </div>
+              )}
           </div>
         </div>
 
@@ -287,29 +309,21 @@ export function DiffViewer({
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div>
                 <h4 className="text-sm font-medium text-gray-900 mb-3">Current Screenshot</h4>
-                {imageErrors.current ? (
-                  renderErrorState('Failed to load current image')
-                ) : (
-                  renderImageWithFallback(
-                    currentImageUrl,
-                    'Current screenshot',
-                    () => handleImageError('current')
-                  )
-                )}
+                {imageErrors.current
+                  ? renderErrorState('Failed to load current image')
+                  : renderImageWithFallback(currentImageUrl, 'Current screenshot', () =>
+                      handleImageError('current')
+                    )}
               </div>
-              
+
               {hasComparison && previousImageUrl && (
                 <div>
                   <h4 className="text-sm font-medium text-gray-900 mb-3">Previous Screenshot</h4>
-                  {imageErrors.previous ? (
-                    renderErrorState('Failed to load previous image')
-                  ) : (
-                    renderImageWithFallback(
-                      previousImageUrl,
-                      'Previous screenshot',
-                      () => handleImageError('previous')
-                    )
-                  )}
+                  {imageErrors.previous
+                    ? renderErrorState('Failed to load previous image')
+                    : renderImageWithFallback(previousImageUrl, 'Previous screenshot', () =>
+                        handleImageError('previous')
+                      )}
                 </div>
               )}
             </div>
@@ -323,24 +337,17 @@ export function DiffViewer({
                 {/* Base Image (Previous) */}
                 {!imageErrors.previous && (
                   <div className="relative">
-                    {renderImageWithFallback(
-                      previousImageUrl,
-                      'Previous screenshot',
-                      () => handleImageError('previous')
+                    {renderImageWithFallback(previousImageUrl, 'Previous screenshot', () =>
+                      handleImageError('previous')
                     )}
                   </div>
                 )}
-                
+
                 {/* Overlay Image (Current) */}
                 {!imageErrors.current && (
-                  <div 
-                    className="absolute inset-0"
-                    style={{ opacity: overlayOpacity / 100 }}
-                  >
-                    {renderImageWithFallback(
-                      currentImageUrl,
-                      'Current screenshot',
-                      () => handleImageError('current')
+                  <div className="absolute inset-0" style={{ opacity: overlayOpacity / 100 }}>
+                    {renderImageWithFallback(currentImageUrl, 'Current screenshot', () =>
+                      handleImageError('current')
                     )}
                   </div>
                 )}
@@ -352,23 +359,29 @@ export function DiffViewer({
           {viewMode === 'diff-only' && hasDiff && diffImageUrl && (
             <div className="max-w-4xl mx-auto">
               <h4 className="text-sm font-medium text-gray-900 mb-3">Visual Differences</h4>
-              {imageErrors.diff ? (
-                renderErrorState('Failed to load diff image')
-              ) : (
-                renderImageWithFallback(
-                  diffImageUrl,
-                  'Visual differences',
-                  () => handleImageError('diff')
-                )
-              )}
+              {imageErrors.diff
+                ? renderErrorState('Failed to load diff image')
+                : renderImageWithFallback(diffImageUrl, 'Visual differences', () =>
+                    handleImageError('diff')
+                  )}
             </div>
           )}
 
           {/* No Comparison Available */}
           {!hasComparison && viewMode !== 'side-by-side' && (
             <div className="text-center py-12">
-              <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              <svg
+                className="w-12 h-12 text-gray-400 mx-auto mb-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
               </svg>
               <p className="text-gray-500">No comparison data available</p>
               <p className="text-sm text-gray-400 mt-1">
@@ -396,9 +409,11 @@ export function DiffViewer({
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">Difference</p>
-                <p className={`text-lg font-bold ${
-                  diffData.percentageDiff > 1 ? 'text-red-600' : 'text-green-600'
-                }`}>
+                <p
+                  className={`text-lg font-bold ${
+                    diffData.percentageDiff > 1 ? 'text-red-600' : 'text-green-600'
+                  }`}
+                >
                   {diffData.percentageDiff.toFixed(2)}%
                 </p>
               </div>

@@ -17,7 +17,7 @@ export interface ParseResult<T> {
 
 export class YamlParser {
   private static formatZodError(error: z.ZodError): ValidationError[] {
-    return error.errors.map(err => ({
+    return error.errors.map((err) => ({
       path: err.path.join('.'),
       message: err.message,
       code: err.code,
@@ -28,10 +28,10 @@ export class YamlParser {
     try {
       // Parse YAML
       const parsed = yaml.load(yamlContent) as unknown;
-      
+
       // Validate against schema
       const result = schema.safeParse(parsed);
-      
+
       if (result.success) {
         return {
           success: true,
@@ -47,11 +47,13 @@ export class YamlParser {
     } catch (error) {
       return {
         success: false,
-        errors: [{
-          path: 'root',
-          message: error instanceof Error ? error.message : 'Failed to parse YAML',
-          code: 'yaml_parse_error',
-        }],
+        errors: [
+          {
+            path: 'root',
+            message: error instanceof Error ? error.message : 'Failed to parse YAML',
+            code: 'yaml_parse_error',
+          },
+        ],
       };
     }
   }
@@ -83,7 +85,9 @@ export class YamlParser {
         if (screenshot.waitFor && Array.isArray(screenshot.waitFor)) {
           screenshot.waitFor.forEach((wait: any) => {
             if (wait.type === 'timeout' && wait.value > 10000) {
-              warnings.push(`Screenshot ${index + 1} (${screenshot.name}): Wait timeout of ${wait.value}ms is quite long`);
+              warnings.push(
+                `Screenshot ${index + 1} (${screenshot.name}): Wait timeout of ${wait.value}ms is quite long`
+              );
             }
           });
         }
@@ -95,12 +99,16 @@ export class YamlParser {
 
         // Warn about very low diff thresholds
         if (screenshot.diffThreshold !== undefined && screenshot.diffThreshold < 0.01) {
-          warnings.push(`Screenshot ${index + 1} (${screenshot.name}): Very low diff threshold (${screenshot.diffThreshold}%) may cause false positives`);
+          warnings.push(
+            `Screenshot ${index + 1} (${screenshot.name}): Very low diff threshold (${screenshot.diffThreshold}%) may cause false positives`
+          );
         }
 
         // Warn about potentially slow URLs
         if (screenshot.url.includes('localhost') || screenshot.url.includes('127.0.0.1')) {
-          warnings.push(`Screenshot ${index + 1} (${screenshot.name}): Using localhost URL may not work in production`);
+          warnings.push(
+            `Screenshot ${index + 1} (${screenshot.name}): Using localhost URL may not work in production`
+          );
         }
       });
     }
@@ -138,9 +146,15 @@ export class YamlParser {
         const normalizedScreenshot = { ...screenshot };
 
         // Handle relative URLs
-        if (normalized.project?.baseUrl && normalizedScreenshot.url && !normalizedScreenshot.url.startsWith('http')) {
+        if (
+          normalized.project?.baseUrl &&
+          normalizedScreenshot.url &&
+          !normalizedScreenshot.url.startsWith('http')
+        ) {
           const baseUrl = normalized.project.baseUrl.replace(/\/$/, '');
-          const path = normalizedScreenshot.url.startsWith('/') ? normalizedScreenshot.url : `/${normalizedScreenshot.url}`;
+          const path = normalizedScreenshot.url.startsWith('/')
+            ? normalizedScreenshot.url
+            : `/${normalizedScreenshot.url}`;
           normalizedScreenshot.url = `${baseUrl}${path}`;
         }
 
@@ -239,8 +253,8 @@ export class YamlParser {
       });
 
       // Add new screenshots
-      const newScreenshots = overrideScreenshots.filter((o: any) => 
-        !baseScreenshots.some((b: any) => b.name === o.name)
+      const newScreenshots = overrideScreenshots.filter(
+        (o: any) => !baseScreenshots.some((b: any) => b.name === o.name)
       );
       merged.screenshots.push(...newScreenshots);
     }

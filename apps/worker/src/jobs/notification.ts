@@ -16,10 +16,10 @@ const emailService = new EmailService();
 
 export const notificationProcessor = async (job: Job) => {
   const data = NotificationJobDataSchema.parse(job.data);
-  
+
   try {
     logger.info(`Processing notification: ${data.type} for project ${data.projectId}`);
-    
+
     // Fetch project and user details
     const supabase = getSupabaseClient();
     const { data: project, error: projectError } = await supabase
@@ -27,19 +27,19 @@ export const notificationProcessor = async (job: Job) => {
       .select('name, user_id, config')
       .eq('id', data.projectId)
       .single();
-    
+
     if (projectError || !project) {
       throw new Error(`Project not found: ${data.projectId}`);
     }
-    
+
     // Check if email notifications are enabled in config
     const emailRecipients = project.config?.integrations?.email?.recipients || [];
-    
+
     if (emailRecipients.length === 0) {
       logger.info('No email recipients configured for project', { projectId: data.projectId });
       return { success: true, skipped: true };
     }
-    
+
     // Fetch screenshot details if needed
     let screenshot: any = null;
     if (data.screenshotId) {
@@ -50,10 +50,10 @@ export const notificationProcessor = async (job: Job) => {
         .single();
       screenshot = screenshotData;
     }
-    
+
     // Generate and send email based on notification type
     let emailContent: { subject: string; html: string } | null = null;
-    
+
     switch (data.type) {
       case 'screenshot_captured':
         if (screenshot) {
@@ -65,7 +65,7 @@ export const notificationProcessor = async (job: Job) => {
           });
         }
         break;
-        
+
       case 'diff_detected':
         if (screenshot) {
           // Extract diff data from the notification data or screenshot
@@ -82,7 +82,7 @@ export const notificationProcessor = async (job: Job) => {
           });
         }
         break;
-        
+
       case 'screenshot_failed':
         if (screenshot) {
           emailContent = EmailService.generateScreenshotFailedEmail({
@@ -93,7 +93,7 @@ export const notificationProcessor = async (job: Job) => {
           });
         }
         break;
-        
+
       case 'project_summary':
         if (data.summary) {
           emailContent = EmailService.generateProjectSummaryEmail({
@@ -104,7 +104,7 @@ export const notificationProcessor = async (job: Job) => {
           });
         }
         break;
-        
+
       case 'bulk_changes':
         if (data.changes && data.changes.length > 0) {
           emailContent = EmailService.generateBulkChangesEmail({
@@ -114,18 +114,18 @@ export const notificationProcessor = async (job: Job) => {
           });
         }
         break;
-        
+
       default:
         logger.warn(`Unknown notification type: ${data.type}`);
     }
-    
+
     if (emailContent) {
       const sent = await emailService.sendEmail({
         to: emailRecipients,
         subject: emailContent.subject,
         html: emailContent.html,
       });
-      
+
       if (sent) {
         logger.info('Notification email sent successfully', {
           type: data.type,
@@ -134,7 +134,7 @@ export const notificationProcessor = async (job: Job) => {
         });
       }
     }
-    
+
     return { success: true };
   } catch (error) {
     logger.error(`Notification failed:`, {

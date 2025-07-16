@@ -10,7 +10,7 @@ interface ProjectPageProps {
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { userId } = auth();
-  
+
   if (!userId) {
     redirect('/sign-in');
   }

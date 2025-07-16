@@ -36,8 +36,8 @@ class ImageDiffAnalyzer {
     includeAA: false,
     alpha: 0.1,
     aaColor: [255, 255, 0], // yellow
-    diffColor: [255, 0, 0],  // red
-    diffColorAlt: [0, 255, 0] // green
+    diffColor: [255, 0, 0], // red
+    diffColorAlt: [0, 255, 0], // green
   };
 
   async fetchImageBuffer(imageUrl: string): Promise<Buffer> {
@@ -48,7 +48,9 @@ class ImageDiffAnalyzer {
       }
       return Buffer.from(await response.arrayBuffer());
     } catch (error) {
-      throw new Error(`Error fetching image from ${imageUrl}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Error fetching image from ${imageUrl}: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -72,7 +74,8 @@ class ImageDiffAnalyzer {
   async pngToBuffer(png: PNG): Promise<Buffer> {
     return new Promise((resolve, reject) => {
       const buffers: Buffer[] = [];
-      png.pack()
+      png
+        .pack()
         .on('data', (chunk) => buffers.push(chunk))
         .on('end', () => resolve(Buffer.concat(buffers)))
         .on('error', reject);
@@ -122,21 +125,14 @@ class ImageDiffAnalyzer {
       const diffPNG = new PNG({ width, height });
 
       // Perform pixel comparison
-      const pixelDiff = pixelmatch(
-        previousPNG.data,
-        currentPNG.data,
-        diffPNG.data,
-        width,
-        height,
-        {
-          threshold: opts.threshold,
-          includeAA: opts.includeAA,
-          alpha: opts.alpha,
-          aaColor: opts.aaColor,
-          diffColor: opts.diffColor,
-          diffColorAlt: opts.diffColorAlt
-        }
-      );
+      const pixelDiff = pixelmatch(previousPNG.data, currentPNG.data, diffPNG.data, width, height, {
+        threshold: opts.threshold,
+        includeAA: opts.includeAA,
+        alpha: opts.alpha,
+        aaColor: opts.aaColor,
+        diffColor: opts.diffColor,
+        diffColorAlt: opts.diffColorAlt,
+      });
 
       const percentageDiff = (pixelDiff / totalPixels) * 100;
       const significant = percentageDiff > significanceThreshold;
@@ -155,7 +151,9 @@ class ImageDiffAnalyzer {
         significant,
       };
     } catch (error) {
-      throw new Error(`Image comparison failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Image comparison failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -168,12 +166,14 @@ class ImageDiffAnalyzer {
     try {
       const [currentBuffer, previousBuffer] = await Promise.all([
         this.fetchImageBuffer(currentImageUrl),
-        this.fetchImageBuffer(previousImageUrl)
+        this.fetchImageBuffer(previousImageUrl),
       ]);
 
       return this.compareImages(currentBuffer, previousBuffer, options, significanceThreshold);
     } catch (error) {
-      throw new Error(`URL comparison failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `URL comparison failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -199,7 +199,7 @@ class ImageDiffAnalyzer {
     }>;
   }> {
     const diff = await this.compareImages(currentImageBuffer, previousImageBuffer, options);
-    
+
     // TODO: Implement region detection algorithm
     // This would analyze the diff image to find contiguous regions of difference
     const regions: Array<{
@@ -224,7 +224,12 @@ export const compareImages = async (
   options?: DiffOptions,
   significanceThreshold?: number
 ): Promise<DiffResult> => {
-  return diffAnalyzer.compareImages(currentImageBuffer, previousImageBuffer, options, significanceThreshold);
+  return diffAnalyzer.compareImages(
+    currentImageBuffer,
+    previousImageBuffer,
+    options,
+    significanceThreshold
+  );
 };
 
 export const compareImageUrls = async (
@@ -233,7 +238,12 @@ export const compareImageUrls = async (
   options?: DiffOptions,
   significanceThreshold?: number
 ): Promise<DiffResult> => {
-  return diffAnalyzer.compareImageUrls(currentImageUrl, previousImageUrl, options, significanceThreshold);
+  return diffAnalyzer.compareImageUrls(
+    currentImageUrl,
+    previousImageUrl,
+    options,
+    significanceThreshold
+  );
 };
 
 export const createImageHash = (buffer: Buffer): string => {

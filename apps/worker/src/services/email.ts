@@ -69,7 +69,7 @@ export class EmailService {
         return true;
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
-        
+
         if (attempt === retries) {
           logger.error('Failed to send email after all retries', {
             error: lastError.message,
@@ -81,9 +81,9 @@ export class EmailService {
             error: lastError.message,
             to: options.to,
           });
-          
+
           // Wait before retry (exponential backoff)
-          await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt - 1)));
+          await new Promise((resolve) => setTimeout(resolve, 1000 * Math.pow(2, attempt - 1)));
         }
       }
     }
@@ -126,11 +126,15 @@ export class EmailService {
       <p><strong>Screenshot:</strong> ${data.screenshotName}</p>
       <p><strong>URL:</strong> <a href="${data.url}">${data.url}</a></p>
       
-      ${data.imageUrl ? `
+      ${
+        data.imageUrl
+          ? `
       <p style="margin-top: 20px;">
         <a href="${data.imageUrl}" class="button">View Screenshot</a>
       </p>
-      ` : ''}
+      `
+          : ''
+      }
       
       <p style="margin-top: 20px; color: #666;">
         This screenshot has been captured and is ready for review in your DocShot AI dashboard.
@@ -326,21 +330,29 @@ export class EmailService {
         </div>
       </div>
       
-      ${data.summary.changesDetected > 0 ? `
+      ${
+        data.summary.changesDetected > 0
+          ? `
       <div style="background-color: #FEF3C7; padding: 15px; border-left: 4px solid #F59E0B; margin: 20px 0;">
         <strong>Action Required:</strong> You have ${data.summary.changesDetected} screenshot(s) with detected changes that need review.
       </div>
-      ` : `
+      `
+          : `
       <div style="background-color: #D1FAE5; padding: 15px; border-left: 4px solid #22C55E; margin: 20px 0;">
         <strong>All Good:</strong> No significant changes detected in your screenshots.
       </div>
-      `}
+      `
+      }
       
-      ${data.dashboardUrl ? `
+      ${
+        data.dashboardUrl
+          ? `
       <p style="text-align: center; margin-top: 30px;">
         <a href="${data.dashboardUrl}" class="button">View Dashboard</a>
       </p>
-      ` : ''}
+      `
+          : ''
+      }
     </div>
     <div class="footer">
       <p>DocShot AI - Automated Screenshot Management</p>
@@ -393,22 +405,30 @@ export class EmailService {
       <p><strong>${data.changes.length} screenshot(s)</strong> have detected changes that require your attention:</p>
       
       <div class="change-list">
-        ${data.changes.map(change => `
+        ${data.changes
+          .map(
+            (change) => `
           <div class="change-item">
             <div class="change-name">${change.screenshotName}</div>
             <div class="change-diff">${change.percentageDiff.toFixed(2)}% changed</div>
             ${change.url ? `<div class="change-url">${change.url}</div>` : ''}
           </div>
-        `).join('')}
+        `
+          )
+          .join('')}
       </div>
       
       <p>Please review these changes and approve or reject them in your dashboard.</p>
       
-      ${data.approvalUrl ? `
+      ${
+        data.approvalUrl
+          ? `
       <p style="text-align: center; margin-top: 30px;">
         <a href="${data.approvalUrl}" class="button">Review All Changes</a>
       </p>
-      ` : ''}
+      `
+          : ''
+      }
     </div>
     <div class="footer">
       <p>DocShot AI - Automated Screenshot Management</p>

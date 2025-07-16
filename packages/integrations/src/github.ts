@@ -26,7 +26,7 @@ export class GitHubIntegration implements Integration {
           repo: this.config.repo,
           path,
         });
-        
+
         if ('sha' in existing.data) {
           sha = existing.data.sha;
         }

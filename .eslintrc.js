@@ -1,9 +1,6 @@
 module.exports = {
   root: true,
-  extends: [
-    'eslint:recommended',
-    'prettier',
-  ],
+  extends: ['eslint:recommended', 'prettier'],
   rules: {
     'no-unused-vars': 'error',
     'prefer-const': 'error',

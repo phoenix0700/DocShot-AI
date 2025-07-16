@@ -5,7 +5,9 @@ import { logger } from '../lib/logger';
 // Create Supabase client lazily to ensure environment variables are loaded
 const getSupabaseClient = () => {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
-    throw new Error('Missing required environment variables: NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_KEY');
+    throw new Error(
+      'Missing required environment variables: NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_KEY'
+    );
   }
   return createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -114,7 +116,7 @@ export class GitHubIntegrationService {
       }
 
       const config = project.config as any;
-      
+
       if (!config.integrations?.github) {
         logger.debug('No GitHub integration configured', { projectId });
         return new GitHubIntegrationService();

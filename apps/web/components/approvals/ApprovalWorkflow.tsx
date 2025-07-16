@@ -19,12 +19,12 @@ interface ApprovalWorkflowProps {
   className?: string;
 }
 
-export function ApprovalWorkflow({ 
-  screenshotId, 
-  currentStatus, 
+export function ApprovalWorkflow({
+  screenshotId,
+  currentStatus,
   onStatusChange,
   diffData,
-  className = ''
+  className = '',
 }: ApprovalWorkflowProps) {
   // TODO: Implement approval workflow logic
   const [isProcessing, setIsProcessing] = useState(false);
@@ -34,7 +34,7 @@ export function ApprovalWorkflow({
   const handleApprove = async () => {
     try {
       setIsProcessing(true);
-      
+
       const response = await fetch('/api/screenshots/approve', {
         method: 'POST',
         headers: {
@@ -69,7 +69,7 @@ export function ApprovalWorkflow({
 
     try {
       setIsProcessing(true);
-      
+
       const response = await fetch('/api/screenshots/approve', {
         method: 'POST',
         headers: {
@@ -102,7 +102,7 @@ export function ApprovalWorkflow({
   const handleReset = async () => {
     try {
       setIsProcessing(true);
-      
+
       const response = await fetch('/api/screenshots/approve', {
         method: 'POST',
         headers: {
@@ -135,7 +135,11 @@ export function ApprovalWorkflow({
         return (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
             <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clipRule="evenodd"
+              />
             </svg>
             Approved
           </span>
@@ -144,7 +148,11 @@ export function ApprovalWorkflow({
         return (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
             <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                clipRule="evenodd"
+              />
             </svg>
             Rejected
           </span>
@@ -154,7 +162,11 @@ export function ApprovalWorkflow({
         return (
           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
             <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                clipRule="evenodd"
+              />
             </svg>
             Pending
           </span>
@@ -167,7 +179,7 @@ export function ApprovalWorkflow({
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           {getStatusBadge()}
-          
+
           {diffData && (
             <span className="text-xs text-gray-500">
               {diffData.percentageDiff.toFixed(2)}% changed
@@ -197,7 +209,7 @@ export function ApprovalWorkflow({
               </Button>
             </>
           )}
-          
+
           {(currentStatus === 'approved' || currentStatus === 'rejected') && (
             <Button
               onClick={handleReset}
@@ -219,7 +231,7 @@ export function ApprovalWorkflow({
             <div className="px-6 py-4 border-b border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900">Reject Screenshot</h3>
             </div>
-            
+
             <div className="px-6 py-4">
               <label htmlFor="reason" className="block text-sm font-medium text-gray-700 mb-2">
                 Reason for rejection *
@@ -234,7 +246,7 @@ export function ApprovalWorkflow({
                 required
               />
             </div>
-            
+
             <div className="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
               <Button
                 onClick={() => {

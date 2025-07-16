@@ -6,7 +6,7 @@ import { createQueueManager } from '@docshot/shared';
 export async function POST(request: NextRequest) {
   try {
     const { userId } = auth();
-    
+
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     );
 
     const { projectId } = await request.json();
-    
+
     if (!projectId) {
       return NextResponse.json({ error: 'Project ID required' }, { status: 400 });
     }
@@ -56,26 +56,31 @@ export async function POST(request: NextRequest) {
 
       // Wait for all jobs to be queued
       await Promise.all(jobPromises);
-      
+
       console.log('Successfully queued', screenshots.length, 'screenshot jobs');
     } catch (queueError) {
       console.error('Queue error:', queueError);
-      return NextResponse.json({ 
-        error: 'Failed to queue screenshot jobs',
-        details: queueError instanceof Error ? queueError.message : 'Unknown error'
-      }, { status: 500 });
+      return NextResponse.json(
+        {
+          error: 'Failed to queue screenshot jobs',
+          details: queueError instanceof Error ? queueError.message : 'Unknown error',
+        },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       message: 'Screenshot jobs queued successfully',
-      count: screenshots.length 
+      count: screenshots.length,
     });
-
   } catch (error) {
     console.error('API error:', error);
-    return NextResponse.json({ 
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
   }
 }

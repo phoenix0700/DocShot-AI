@@ -17,7 +17,7 @@ export class NotionIntegration implements Integration {
     // Note: Notion doesn't support direct file uploads via API
     // This would require uploading to a file service first, then linking
     // For now, this is a placeholder implementation
-    
+
     try {
       const response = await this.notion.blocks.children.append({
         block_id: this.config.pageId,

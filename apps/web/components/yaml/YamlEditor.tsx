@@ -15,12 +15,12 @@ interface YamlEditorProps {
   className?: string;
 }
 
-export function YamlEditor({ 
-  initialConfig = '', 
-  onSave, 
-  onCancel, 
+export function YamlEditor({
+  initialConfig = '',
+  onSave,
+  onCancel,
   projectName,
-  className = ''
+  className = '',
 }: YamlEditorProps) {
   const [yamlContent, setYamlContent] = useState(initialConfig);
   const [parsedConfig, setParsedConfig] = useState<ProjectConfig | null>(null);
@@ -60,17 +60,17 @@ export function YamlEditor({
     }
 
     setIsValidating(true);
-    
+
     try {
       const result = YamlParser.parseProjectConfig(content);
-      
+
       if (result.success && result.data) {
         setParsedConfig(result.data as ProjectConfig);
         setErrors([]);
         setWarnings(result.warnings || []);
       } else {
         setParsedConfig(null);
-        setErrors(result.errors?.map(e => `${e.path}: ${e.message}`) || ['Unknown error']);
+        setErrors(result.errors?.map((e) => `${e.path}: ${e.message}`) || ['Unknown error']);
         setWarnings([]);
       }
     } catch (error) {
@@ -78,7 +78,7 @@ export function YamlEditor({
       setErrors([`Validation error: ${error instanceof Error ? error.message : 'Unknown error'}`]);
       setWarnings([]);
     }
-    
+
     setIsValidating(false);
   };
 
@@ -117,7 +117,7 @@ integrations:
     branch: "main"
   slack:
     webhook: "https://hooks.slack.com/services/..."
-    channel: "#screenshots"`
+    channel: "#screenshots"`,
     };
 
     const templateContent = templates[template as keyof typeof templates];
@@ -140,7 +140,7 @@ integrations:
               Define your screenshot monitoring configuration using YAML
             </p>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <Button
               variant="outline"
@@ -150,7 +150,7 @@ integrations:
             >
               {showPreview ? 'Hide Preview' : 'Show Preview'}
             </Button>
-            
+
             {isValidating && <LoadingSpinner size="sm" />}
           </div>
         </div>
@@ -221,7 +221,7 @@ integrations:
                   </ul>
                 </div>
               )}
-              
+
               {warnings.length > 0 && (
                 <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
                   <h4 className="text-sm font-medium text-yellow-800 mb-2">Warnings:</h4>
@@ -245,11 +245,12 @@ integrations:
               <span>Characters: {yamlContent.length}</span>
               {parsedConfig && (
                 <span className="text-green-600">
-                  ✓ {parsedConfig.screenshots.length} screenshot{parsedConfig.screenshots.length !== 1 ? 's' : ''} configured
+                  ✓ {parsedConfig.screenshots.length} screenshot
+                  {parsedConfig.screenshots.length !== 1 ? 's' : ''} configured
                 </span>
               )}
             </div>
-            
+
             {errors.length === 0 && parsedConfig && (
               <span className="text-green-600 text-sm">✓ Valid configuration</span>
             )}
@@ -260,7 +261,7 @@ integrations:
         {showPreview && parsedConfig && (
           <div className="lg:w-80 border-l border-gray-200 p-6 bg-gray-50">
             <h4 className="text-sm font-semibold text-gray-900 mb-4">Configuration Preview</h4>
-            
+
             <div className="space-y-4 text-sm">
               {/* Project Info */}
               <div>
@@ -273,7 +274,9 @@ integrations:
 
               {/* Screenshots */}
               <div>
-                <h5 className="font-medium text-gray-700">Screenshots ({parsedConfig.screenshots.length})</h5>
+                <h5 className="font-medium text-gray-700">
+                  Screenshots ({parsedConfig.screenshots.length})
+                </h5>
                 <div className="space-y-2 mt-2">
                   {parsedConfig.screenshots.slice(0, 5).map((screenshot, index) => (
                     <div key={index} className="bg-white rounded p-2 text-xs">
@@ -323,15 +326,11 @@ integrations:
       {/* Footer Actions */}
       <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end space-x-3">
         {onCancel && (
-          <Button
-            variant="outline"
-            onClick={onCancel}
-            disabled={isSaving}
-          >
+          <Button variant="outline" onClick={onCancel} disabled={isSaving}>
             Cancel
           </Button>
         )}
-        
+
         <Button
           onClick={handleSave}
           disabled={isSaving || errors.length > 0 || !parsedConfig}

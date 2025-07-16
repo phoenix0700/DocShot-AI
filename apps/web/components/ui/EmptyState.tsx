@@ -11,20 +11,9 @@ interface EmptyStateProps {
   icon?: ReactNode;
 }
 
-export function EmptyState({ 
-  title, 
-  description, 
-  actionLabel, 
-  onAction, 
-  icon 
-}: EmptyStateProps) {
+export function EmptyState({ title, description, actionLabel, onAction, icon }: EmptyStateProps) {
   const defaultIcon = (
-    <svg
-      className="w-12 h-12 text-gray-400"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
+    <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -36,13 +25,9 @@ export function EmptyState({
 
   return (
     <div className="text-center py-12">
-      <div className="flex justify-center mb-4">
-        {icon || defaultIcon}
-      </div>
+      <div className="flex justify-center mb-4">{icon || defaultIcon}</div>
       <h3 className="text-lg font-medium text-gray-900 mb-2">{title}</h3>
-      {description && (
-        <p className="text-gray-500 mb-6 max-w-sm mx-auto">{description}</p>
-      )}
+      {description && <p className="text-gray-500 mb-6 max-w-sm mx-auto">{description}</p>}
       {actionLabel && onAction && (
         <Button onClick={onAction} className="bg-blue-600 hover:bg-blue-700">
           {actionLabel}

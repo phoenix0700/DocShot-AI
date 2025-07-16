@@ -7,7 +7,7 @@ import * as path from 'path';
 
 async function testLocalScreenshot() {
   console.log('🧪 Testing screenshot capture with local HTML...\n');
-  
+
   try {
     // Create a simple local HTML file
     const htmlContent = `
@@ -60,15 +60,15 @@ async function testLocalScreenshot() {
     </div>
 </body>
 </html>`;
-    
+
     const testDir = path.join(__dirname, '../test-output');
     if (!fs.existsSync(testDir)) {
       fs.mkdirSync(testDir, { recursive: true });
     }
-    
+
     const htmlFile = path.join(testDir, 'test.html');
     fs.writeFileSync(htmlFile, htmlContent);
-    
+
     // Test 1: Full page screenshot
     console.log('Test 1: Full page screenshot');
     const result1 = await captureScreenshot({
@@ -76,15 +76,15 @@ async function testLocalScreenshot() {
       viewport: { width: 1280, height: 720 },
       waitForTimeout: 500,
     });
-    
+
     console.log(`✅ Full page screenshot captured!`);
     console.log(`   Size: ${result1.buffer.length} bytes`);
     console.log(`   Duration: ${result1.metadata.duration}ms\n`);
-    
+
     const screenshot1 = path.join(testDir, 'test-fullpage.png');
     fs.writeFileSync(screenshot1, result1.buffer);
     console.log(`📁 Screenshot saved: ${screenshot1}\n`);
-    
+
     // Test 2: Element screenshot
     console.log('Test 2: Element screenshot (header)');
     const result2 = await captureScreenshot({
@@ -93,16 +93,16 @@ async function testLocalScreenshot() {
       viewport: { width: 1280, height: 720 },
       waitForTimeout: 500,
     });
-    
+
     console.log(`✅ Element screenshot captured!`);
     console.log(`   Size: ${result2.buffer.length} bytes`);
     console.log(`   Duration: ${result2.metadata.duration}ms`);
     console.log(`   Selector: ${result2.metadata.selector}\n`);
-    
+
     const screenshot2 = path.join(testDir, 'test-header.png');
     fs.writeFileSync(screenshot2, result2.buffer);
     console.log(`📁 Element screenshot saved: ${screenshot2}\n`);
-    
+
     // Test 3: Different viewport
     console.log('Test 3: Mobile viewport screenshot');
     const result3 = await captureScreenshot({
@@ -110,18 +110,19 @@ async function testLocalScreenshot() {
       viewport: { width: 375, height: 667 }, // iPhone size
       waitForTimeout: 500,
     });
-    
+
     console.log(`✅ Mobile screenshot captured!`);
     console.log(`   Size: ${result3.buffer.length} bytes`);
-    console.log(`   Viewport: ${result3.metadata.viewport.width}x${result3.metadata.viewport.height}\n`);
-    
+    console.log(
+      `   Viewport: ${result3.metadata.viewport.width}x${result3.metadata.viewport.height}\n`
+    );
+
     const screenshot3 = path.join(testDir, 'test-mobile.png');
     fs.writeFileSync(screenshot3, result3.buffer);
     console.log(`📁 Mobile screenshot saved: ${screenshot3}\n`);
-    
+
     console.log('🎉 All local screenshot tests passed!');
     console.log(`📂 Test files saved in: ${testDir}`);
-    
   } catch (error) {
     console.error('❌ Screenshot test failed:', error);
     process.exit(1);

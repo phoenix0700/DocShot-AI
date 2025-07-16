@@ -73,7 +73,11 @@ async function testEmailNotifications() {
       projectName: 'DocShot AI Demo',
       changes: [
         { screenshotName: 'Homepage Header', percentageDiff: 2.45, url: 'https://example.com' },
-        { screenshotName: 'Product Gallery', percentageDiff: 5.12, url: 'https://example.com/products' },
+        {
+          screenshotName: 'Product Gallery',
+          percentageDiff: 5.12,
+          url: 'https://example.com/products',
+        },
         { screenshotName: 'Contact Form', percentageDiff: 1.89 },
       ],
       approvalUrl: 'https://app.example.com/projects/123',
@@ -85,7 +89,7 @@ async function testEmailNotifications() {
     // Test 6: Email service configuration check
     console.log('Test 6: Email service configuration');
     const hasSmtpConfig = !!(process.env.SMTP_USER && process.env.SMTP_PASS);
-    
+
     if (hasSmtpConfig) {
       console.log('✅ SMTP configuration found');
       console.log(`   Host: ${process.env.SMTP_HOST || 'smtp.gmail.com'}`);
@@ -98,7 +102,7 @@ async function testEmailNotifications() {
       if (testRecipient) {
         console.log('Test 7: Sending actual test email');
         console.log(`Sending to: ${testRecipient}`);
-        
+
         const testEmailSent = await emailService.sendEmail({
           to: [testRecipient],
           subject: '[DocShot AI] Test Email - Email Notifications Working!',
@@ -166,24 +170,20 @@ async function testEmailNotifications() {
     }
 
     console.log('\n🎉 All email notification tests completed!');
-    
+
     // Save sample email to file for inspection
     const fs = require('fs');
     const path = require('path');
-    
+
     const outputDir = path.join(__dirname, '../test-output');
     if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
     }
-    
-    fs.writeFileSync(
-      path.join(outputDir, 'sample-diff-email.html'),
-      diffEmail.html
-    );
-    
+
+    fs.writeFileSync(path.join(outputDir, 'sample-diff-email.html'), diffEmail.html);
+
     console.log(`📁 Sample email saved to: ${path.join(outputDir, 'sample-diff-email.html')}`);
     console.log('   Open this file in a browser to preview the email design');
-
   } catch (error) {
     console.error('❌ Email notification test failed:', error);
     process.exit(1);

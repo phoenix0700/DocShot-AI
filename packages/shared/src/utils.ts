@@ -7,7 +7,7 @@ export const formatDate = (date: Date): string => {
 };
 
 export const delay = (ms: number): Promise<void> => {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
 export const validateUrl = (url: string): boolean => {

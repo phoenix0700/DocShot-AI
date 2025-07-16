@@ -11,16 +11,16 @@ export default function NotFound() {
             Sorry, we couldn&apos;t find the page you&apos;re looking for.
           </p>
         </div>
-        
+
         <div className="space-y-4">
-          <Link 
+          <Link
             href="/"
             className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Go Home
           </Link>
-          
-          <Link 
+
+          <Link
             href="/dashboard"
             className="block text-blue-600 hover:text-blue-800 transition-colors"
           >

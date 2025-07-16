@@ -8,13 +8,13 @@ import * as path from 'path';
 
 async function testVisualDiff() {
   console.log('🧪 Testing visual diff functionality...\n');
-  
+
   try {
     const testDir = path.join(__dirname, '../test-output');
     if (!fs.existsSync(testDir)) {
       fs.mkdirSync(testDir, { recursive: true });
     }
-    
+
     // Create two slightly different HTML files for comparison
     const htmlContent1 = `
 <!DOCTYPE html>
@@ -86,12 +86,12 @@ async function testVisualDiff() {
     </div>
 </body>
 </html>`;
-    
+
     const htmlFile1 = path.join(testDir, 'test-v1.html');
     const htmlFile2 = path.join(testDir, 'test-v2.html');
     fs.writeFileSync(htmlFile1, htmlContent1);
     fs.writeFileSync(htmlFile2, htmlContent2);
-    
+
     // Test 1: Capture screenshots of both versions
     console.log('Test 1: Capturing screenshots of both versions');
     const screenshot1 = await captureScreenshot({
@@ -99,21 +99,21 @@ async function testVisualDiff() {
       viewport: { width: 1280, height: 720 },
       waitForTimeout: 500,
     });
-    
+
     const screenshot2 = await captureScreenshot({
       url: `file://${htmlFile2}`,
       viewport: { width: 1280, height: 720 },
       waitForTimeout: 500,
     });
-    
+
     // Save individual screenshots
     fs.writeFileSync(path.join(testDir, 'diff-v1.png'), screenshot1.buffer);
     fs.writeFileSync(path.join(testDir, 'diff-v2.png'), screenshot2.buffer);
-    
+
     console.log(`✅ Screenshots captured:`);
     console.log(`   Version 1: ${screenshot1.buffer.length} bytes`);
     console.log(`   Version 2: ${screenshot2.buffer.length} bytes\n`);
-    
+
     // Test 2: Compare the two screenshots
     console.log('Test 2: Visual diff comparison');
     const diffResult = await compareImages(
@@ -126,20 +126,22 @@ async function testVisualDiff() {
       },
       0.5 // 0.5% significance threshold
     );
-    
+
     console.log(`✅ Diff analysis complete:`);
     console.log(`   Pixels changed: ${diffResult.pixelDiff.toLocaleString()}`);
     console.log(`   Total pixels: ${diffResult.totalPixels.toLocaleString()}`);
     console.log(`   Percentage changed: ${diffResult.percentageDiff.toFixed(2)}%`);
     console.log(`   Significant change: ${diffResult.significant ? 'YES' : 'NO'}`);
-    console.log(`   Image dimensions: ${diffResult.dimensions.width}x${diffResult.dimensions.height}\n`);
-    
+    console.log(
+      `   Image dimensions: ${diffResult.dimensions.width}x${diffResult.dimensions.height}\n`
+    );
+
     // Save diff image
     if (diffResult.diffImageBuffer) {
       fs.writeFileSync(path.join(testDir, 'diff-comparison.png'), diffResult.diffImageBuffer);
       console.log(`📁 Diff image saved: ${path.join(testDir, 'diff-comparison.png')}\n`);
     }
-    
+
     // Test 3: Test identical images (no diff)
     console.log('Test 3: Comparing identical images');
     const identicalDiff = await compareImages(
@@ -148,16 +150,16 @@ async function testVisualDiff() {
       { threshold: 0.1 },
       0.1
     );
-    
+
     console.log(`✅ Identical comparison:`);
     console.log(`   Pixels changed: ${identicalDiff.pixelDiff}`);
     console.log(`   Percentage changed: ${identicalDiff.percentageDiff.toFixed(2)}%`);
     console.log(`   Significant change: ${identicalDiff.significant ? 'YES' : 'NO'}\n`);
-    
+
     // Test 4: Test with different thresholds
     console.log('Test 4: Testing different sensitivity thresholds');
     const sensitiveThresholds = [0.1, 0.5, 1.0, 2.0];
-    
+
     for (const threshold of sensitiveThresholds) {
       const thresholdResult = await compareImages(
         screenshot1.buffer,
@@ -165,21 +167,26 @@ async function testVisualDiff() {
         { threshold: 0.1 },
         threshold
       );
-      
-      console.log(`   ${threshold}% threshold: ${thresholdResult.significant ? 'SIGNIFICANT' : 'not significant'} (${thresholdResult.percentageDiff.toFixed(2)}%)`);
+
+      console.log(
+        `   ${threshold}% threshold: ${thresholdResult.significant ? 'SIGNIFICANT' : 'not significant'} (${thresholdResult.percentageDiff.toFixed(2)}%)`
+      );
     }
-    
+
     console.log('\n🎉 All visual diff tests completed successfully!');
     console.log(`📂 Test files saved in: ${testDir}`);
-    
+
     // Summary
     console.log('\n📊 Test Summary:');
     console.log(`├── Version 1 screenshot: ${(screenshot1.buffer.length / 1024).toFixed(1)} KB`);
     console.log(`├── Version 2 screenshot: ${(screenshot2.buffer.length / 1024).toFixed(1)} KB`);
     console.log(`├── Diff analysis: ${diffResult.percentageDiff.toFixed(2)}% changed`);
-    console.log(`├── Change significance: ${diffResult.significant ? '🔴 SIGNIFICANT' : '🟢 Minor'}`);
-    console.log(`└── Diff image: ${diffResult.diffImageBuffer ? (diffResult.diffImageBuffer.length / 1024).toFixed(1) + ' KB' : 'N/A'}`);
-    
+    console.log(
+      `├── Change significance: ${diffResult.significant ? '🔴 SIGNIFICANT' : '🟢 Minor'}`
+    );
+    console.log(
+      `└── Diff image: ${diffResult.diffImageBuffer ? (diffResult.diffImageBuffer.length / 1024).toFixed(1) + ' KB' : 'N/A'}`
+    );
   } catch (error) {
     console.error('❌ Visual diff test failed:', error);
     process.exit(1);

@@ -11,23 +11,23 @@ const retryWithBackoff = async <T>(
   baseDelay: number
 ): Promise<T> => {
   let lastError: Error;
-  
+
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       return await fn();
     } catch (error) {
       lastError = error instanceof Error ? error : new Error('Unknown error');
-      
+
       if (attempt === maxRetries) {
         throw lastError;
       }
-      
+
       const delay = baseDelay * Math.pow(2, attempt - 1);
       console.log(`Diff attempt ${attempt} failed, retrying in ${delay}ms:`, lastError.message);
-      await new Promise(resolve => setTimeout(resolve, delay));
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
-  
+
   throw lastError!;
 };
 
@@ -48,29 +48,32 @@ const notificationQueue = new Queue('notification', { connection: redis });
 
 export const diffProcessor = async (job: Job) => {
   const data = DiffJobDataSchema.parse(job.data);
-  
+
   try {
     job.updateProgress(10);
     console.log(`Processing diff job for screenshot ${data.screenshotId}`);
-    
+
     // Compare images with retry logic
     job.updateProgress(30);
     const diffResult = await retryWithBackoff(
-      () => compareImageUrls(
-        data.currentImageUrl,
-        data.previousImageUrl,
-        { threshold: 0.1 }, // Default threshold
-        1.0 // Significance threshold (1% change)
-      ),
+      () =>
+        compareImageUrls(
+          data.currentImageUrl,
+          data.previousImageUrl,
+          { threshold: 0.1 }, // Default threshold
+          1.0 // Significance threshold (1% change)
+        ),
       3,
       1000
     );
-    
+
     job.updateProgress(60);
-    console.log(`Diff completed: ${diffResult.percentageDiff.toFixed(2)}% changed (${diffResult.pixelDiff} pixels)`);
-    
+    console.log(
+      `Diff completed: ${diffResult.percentageDiff.toFixed(2)}% changed (${diffResult.pixelDiff} pixels)`
+    );
+
     let diffImageUrl: string | null = null;
-    
+
     // Upload diff image if changes detected
     if (diffResult.significant && diffResult.diffImageBuffer) {
       const supabase = getSupabaseClient();
@@ -79,7 +82,7 @@ export const diffProcessor = async (job: Job) => {
         .select('project_id')
         .eq('id', data.screenshotId)
         .single();
-      
+
       if (screenshot) {
         const storage = getStorageService();
         const uploadResult = await storage.uploadDiffImage(
@@ -93,14 +96,14 @@ export const diffProcessor = async (job: Job) => {
             significant: diffResult.significant.toString(),
           }
         );
-        
+
         diffImageUrl = uploadResult.publicUrl;
         console.log(`Diff image uploaded to ${uploadResult.key}`);
       }
     }
-    
+
     job.updateProgress(80);
-    
+
     // Create notification if significant change detected
     if (diffResult.significant) {
       const supabase = getSupabaseClient();
@@ -109,19 +112,21 @@ export const diffProcessor = async (job: Job) => {
         .select('project_id')
         .eq('id', data.screenshotId)
         .single();
-      
+
       await notificationQueue.add('diff_detected', {
         type: 'diff_detected',
         screenshotId: data.screenshotId,
         projectId: screenshotData.data?.project_id || '',
         message: `Visual difference detected: ${diffResult.percentageDiff.toFixed(2)}% of pixels changed`,
       });
-      
-      console.log(`Notification queued for significant difference: ${diffResult.percentageDiff.toFixed(2)}%`);
+
+      console.log(
+        `Notification queued for significant difference: ${diffResult.percentageDiff.toFixed(2)}%`
+      );
     }
-    
+
     job.updateProgress(100);
-    
+
     return {
       ...diffResult,
       diffImageUrl,
@@ -129,7 +134,7 @@ export const diffProcessor = async (job: Job) => {
     };
   } catch (error) {
     console.error(`Diff failed for screenshot ${data.screenshotId}:`, error);
-    
+
     // Create failure notification
     try {
       const supabase = getSupabaseClient();
@@ -138,7 +143,7 @@ export const diffProcessor = async (job: Job) => {
         .select('project_id')
         .eq('id', data.screenshotId)
         .single();
-      
+
       await notificationQueue.add('diff_failed', {
         type: 'screenshot_failed',
         screenshotId: data.screenshotId,
@@ -148,7 +153,7 @@ export const diffProcessor = async (job: Job) => {
     } catch (notificationError) {
       console.error('Failed to create error notification:', notificationError);
     }
-    
+
     throw error;
   }
 };

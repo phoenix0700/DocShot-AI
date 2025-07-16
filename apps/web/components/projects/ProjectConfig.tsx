@@ -59,7 +59,6 @@ export function ProjectConfig({ projectId, userId }: ProjectConfigProps) {
       // For now, we'll start with a template. In a real app, you'd store this in the database
       const existingConfig = generateConfigFromProject(projectData);
       setCurrentConfig(existingConfig);
-
     } catch (err) {
       console.error('Error loading project:', err);
       setError('Failed to load project details. Please try again.');
@@ -112,7 +111,7 @@ settings:
       // Save the YAML configuration to the database
       const { error: updateError } = await supabase
         .from('projects')
-        .update({ 
+        .update({
           config: config,
           updated_at: new Date().toISOString(),
         })
@@ -146,7 +145,7 @@ settings:
       }
 
       // Create new screenshots from config
-      const screenshotsToInsert = config.screenshots.map(screenshot => ({
+      const screenshotsToInsert = config.screenshots.map((screenshot) => ({
         project_id: projectId,
         name: screenshot.name,
         url: screenshot.url,
@@ -166,7 +165,6 @@ settings:
 
       // Screenshot jobs will be queued via API endpoints
       // This is handled by the server-side API routes
-
     } catch (error) {
       console.error('Error creating screenshots from config:', error);
       throw error;
@@ -215,9 +213,7 @@ settings:
 
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              Configure {project.name}
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-900">Configure {project.name}</h1>
             <p className="text-gray-600 mt-2">
               Define screenshot monitoring rules and integrations using YAML configuration.
             </p>
@@ -239,13 +235,16 @@ settings:
         <h3 className="text-lg font-semibold text-blue-900 mb-2">Configuration Help</h3>
         <div className="text-sm text-blue-800 space-y-2">
           <p>
-            <strong>Screenshots:</strong> Define the pages you want to monitor. Each screenshot can target a full page or specific element.
+            <strong>Screenshots:</strong> Define the pages you want to monitor. Each screenshot can
+            target a full page or specific element.
           </p>
           <p>
-            <strong>Integrations:</strong> Connect with GitHub, Slack, or other services to automatically update documentation and send notifications.
+            <strong>Integrations:</strong> Connect with GitHub, Slack, or other services to
+            automatically update documentation and send notifications.
           </p>
           <p>
-            <strong>Settings:</strong> Configure global settings like concurrency limits, timeouts, and default diff thresholds.
+            <strong>Settings:</strong> Configure global settings like concurrency limits, timeouts,
+            and default diff thresholds.
           </p>
         </div>
       </div>

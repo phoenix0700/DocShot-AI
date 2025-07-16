@@ -80,7 +80,7 @@ export function ProjectDetail({ projectId, userId }: ProjectDetailProps) {
     try {
       setError(null);
       setRunningScreenshots(true);
-      
+
       const response = await fetch('/api/screenshots/run', {
         method: 'POST',
         headers: {
@@ -97,7 +97,6 @@ export function ProjectDetail({ projectId, userId }: ProjectDetailProps) {
 
       // Refresh the project data to see updated status
       await loadProject();
-      
     } catch (err) {
       console.error('Error running screenshots:', err);
       setError(err instanceof Error ? err.message : 'Failed to run screenshots');
@@ -142,12 +141,8 @@ export function ProjectDetail({ projectId, userId }: ProjectDetailProps) {
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div className="flex-1 min-w-0">
-            <h1 className="text-3xl font-bold text-gray-900 truncate">
-              {project.name}
-            </h1>
-            {project.description && (
-              <p className="text-gray-600 mt-2">{project.description}</p>
-            )}
+            <h1 className="text-3xl font-bold text-gray-900 truncate">{project.name}</h1>
+            {project.description && <p className="text-gray-600 mt-2">{project.description}</p>}
             <div className="flex items-center space-x-6 mt-4 text-sm text-gray-500">
               <span>
                 Created {formatDistanceToNow(new Date(project.created_at), { addSuffix: true })}
@@ -157,14 +152,12 @@ export function ProjectDetail({ projectId, userId }: ProjectDetailProps) {
               </span>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-3 mt-4 sm:mt-0">
             <Link href={`/projects/${project.id}/config`}>
-              <Button variant="outline">
-                Configure
-              </Button>
+              <Button variant="outline">Configure</Button>
             </Link>
-            <Button 
+            <Button
               className="bg-blue-600 hover:bg-blue-700"
               onClick={runScreenshots}
               disabled={runningScreenshots}
@@ -180,8 +173,18 @@ export function ProjectDetail({ projectId, userId }: ProjectDetailProps) {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <svg className="h-8 w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              <svg
+                className="h-8 w-8 text-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
               </svg>
             </div>
             <div className="ml-4">
@@ -194,8 +197,18 @@ export function ProjectDetail({ projectId, userId }: ProjectDetailProps) {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <svg className="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="h-8 w-8 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </div>
             <div className="ml-4">
@@ -208,8 +221,18 @@ export function ProjectDetail({ projectId, userId }: ProjectDetailProps) {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <svg className="h-8 w-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.863-.833-2.633 0L4.18 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              <svg
+                className="h-8 w-8 text-yellow-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.863-.833-2.633 0L4.18 16.5c-.77.833.192 2.5 1.732 2.5z"
+                />
               </svg>
             </div>
             <div className="ml-4">
@@ -222,8 +245,18 @@ export function ProjectDetail({ projectId, userId }: ProjectDetailProps) {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <svg className="h-8 w-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="h-8 w-8 text-red-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </div>
             <div className="ml-4">

@@ -8,11 +8,7 @@ export const metadata: Metadata = {
   description: 'Automated screenshot capture and updates for documentation',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <ClerkProvider>
       <html lang="en">

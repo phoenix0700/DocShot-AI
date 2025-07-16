@@ -54,8 +54,8 @@ const notificationWorker = new Worker('notification', notificationProcessor, {
 });
 
 // Error handling
-[screenshotWorker, diffWorker, notificationWorker].forEach(worker => {
-  worker.on('completed', job => {
+[screenshotWorker, diffWorker, notificationWorker].forEach((worker) => {
+  worker.on('completed', (job) => {
     logger.info(`Job completed`, {
       queue: job.queueName,
       jobId: job.id,
@@ -86,11 +86,7 @@ logger.info('DocShot AI Worker started', {
 // Graceful shutdown
 process.on('SIGTERM', async () => {
   logger.info('Shutting down workers...');
-  await Promise.all([
-    screenshotWorker.close(),
-    diffWorker.close(),
-    notificationWorker.close(),
-  ]);
+  await Promise.all([screenshotWorker.close(), diffWorker.close(), notificationWorker.close()]);
   await redis.quit();
   process.exit(0);
 });

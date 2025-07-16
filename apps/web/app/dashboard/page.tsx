@@ -4,7 +4,7 @@ import { ProjectDashboard } from '../../components/dashboard/ProjectDashboard';
 
 export default async function DashboardPage() {
   const { userId } = auth();
-  
+
   if (!userId) {
     redirect('/sign-in');
   }

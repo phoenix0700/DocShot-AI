@@ -5,7 +5,7 @@ import { createSupabaseClient } from '@docshot/database';
 export async function POST(request: NextRequest) {
   try {
     const { userId } = auth();
-    
+
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     );
 
     const { screenshotId, action } = await request.json();
-    
+
     if (!screenshotId || !action) {
       return NextResponse.json({ error: 'Screenshot ID and action required' }, { status: 400 });
     }
@@ -39,9 +39,9 @@ export async function POST(request: NextRequest) {
 
     const { error } = await supabase
       .from('screenshots')
-      .update({ 
+      .update({
         status: newStatus,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .eq('id', screenshotId);
 
@@ -50,16 +50,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Database error' }, { status: 500 });
     }
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       message: `Screenshot ${action} successfully`,
-      status: newStatus 
+      status: newStatus,
     });
-
   } catch (error) {
     console.error('API error:', error);
-    return NextResponse.json({ 
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
   }
 }
