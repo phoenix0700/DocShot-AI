@@ -7,6 +7,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive';
   size?: 'sm' | 'md' | 'lg';
   children: React.ReactNode;
+  asChild?: boolean;
 }
 
 export function Button({
@@ -15,6 +16,7 @@ export function Button({
   className,
   children,
   disabled,
+  asChild = false,
   ...props
 }: ButtonProps) {
   const baseClasses =
@@ -34,9 +36,18 @@ export function Button({
     lg: 'px-6 py-3 text-base',
   };
 
+  const classes = cn(baseClasses, variantClasses[variant], sizeClasses[size], className);
+
+  if (asChild) {
+    return React.cloneElement(children as React.ReactElement, {
+      className: classes,
+      ...props,
+    });
+  }
+
   return (
     <button
-      className={cn(baseClasses, variantClasses[variant], sizeClasses[size], className)}
+      className={classes}
       disabled={disabled}
       {...props}
     >
