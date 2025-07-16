@@ -1,5 +1,7 @@
 # DocShot AI
 
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/phoenix0700/DocShot-AI&project-name=docshot-ai&repository-name=DocShot-AI)
+
 Automated screenshot capture and documentation updates for modern teams. Keep your documentation visually up-to-date with zero manual effort.
 
 ## Features
@@ -178,6 +180,11 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed deployment instruction
 
 ### Quick Deploy
 
+#### Option 1: One-Click Deploy (Recommended)
+1. **Frontend**: Click the "Deploy to Vercel" button above
+2. **Worker**: Deploy to Railway using the template (coming soon)
+
+#### Option 2: Manual Deploy
 1. **Deploy database to Supabase**
    ```bash
    supabase db push --project-ref your-project-ref
@@ -185,12 +192,12 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed deployment instruction
 
 2. **Deploy web app to Vercel**
    ```bash
-   vercel --prod
+   cd apps/web && vercel --prod
    ```
 
 3. **Deploy worker to Railway**
    ```bash
-   railway up
+   cd apps/worker && railway up
    ```
 
 ## Environment Variables
