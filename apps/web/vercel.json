@@ -1,0 +1,20 @@
+{
+  "buildCommand": "cd ../.. && pnpm build --filter=web",
+  "devCommand": "cd ../.. && pnpm dev --filter=web",
+  "installCommand": "pnpm install",
+  "framework": "nextjs",
+  "outputDirectory": ".next",
+  "env": {
+    "NEXT_PUBLIC_SUPABASE_URL": "@supabase_url",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase_anon_key",
+    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "@clerk_publishable_key",
+    "CLERK_SECRET_KEY": "@clerk_secret_key",
+    "NEXT_PUBLIC_APP_URL": "@app_url"
+  },
+  "build": {
+    "env": {
+      "TURBO_TOKEN": "@turbo_token",
+      "TURBO_TEAM": "@turbo_team"
+    }
+  }
+}

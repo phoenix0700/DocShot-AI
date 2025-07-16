@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "paths": {
+      "@docshot/shared": ["../../packages/shared/src"],
+      "@docshot/database": ["../../packages/database/src"],
+      "@docshot/integrations": ["../../packages/integrations/src"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["dist", "node_modules"]
+}
