@@ -31,7 +31,7 @@ export function ProjectDashboard({ userId }: ProjectDashboardProps) {
 
   useEffect(() => {
     loadProjects();
-  }, [userId, loadProjects]);
+  }, [userId]);
 
   const loadProjects = async () => {
     try {

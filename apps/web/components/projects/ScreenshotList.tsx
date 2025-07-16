@@ -37,7 +37,7 @@ export function ScreenshotList({ projectId, userId }: ScreenshotListProps) {
 
   useEffect(() => {
     loadScreenshots();
-  }, [projectId, loadScreenshots]);
+  }, [projectId]);
 
   const loadScreenshots = async () => {
     try {

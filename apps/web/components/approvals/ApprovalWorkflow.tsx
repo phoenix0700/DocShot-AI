@@ -8,7 +8,8 @@ import { LoadingSpinner } from '../ui/LoadingSpinner';
 interface ApprovalWorkflowProps {
   screenshotId: string;
   currentStatus: 'pending' | 'approved' | 'rejected';
-  onStatusChange: (newStatus: 'pending' | 'approved' | 'rejected') => void;
+  // eslint-disable-next-line no-unused-vars
+  onStatusChange: (status: 'pending' | 'approved' | 'rejected') => void;
   userId: string;
   diffData?: {
     pixelDiff: number;

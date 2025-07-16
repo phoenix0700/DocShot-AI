@@ -42,7 +42,8 @@ interface Screenshot {
 interface ScreenshotItemProps {
   screenshot: Screenshot;
   onDeleted: () => void;
-  onUpdated: (_screenshot: Screenshot) => void;
+  // eslint-disable-next-line no-unused-vars
+  onUpdated: (updatedScreenshot: Screenshot) => void;
   userId: string;
 }
 

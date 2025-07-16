@@ -8,7 +8,8 @@ import { LoadingSpinner } from '../ui/LoadingSpinner';
 
 interface YamlEditorProps {
   initialConfig?: string;
-  onSave: (config: ProjectConfig) => Promise<void>;
+  // eslint-disable-next-line no-unused-vars
+  onSave: (projectConfig: ProjectConfig) => Promise<void>;
   onCancel?: () => void;
   projectName?: string;
   className?: string;
@@ -38,7 +39,7 @@ export function YamlEditor({
     } else if (yamlContent) {
       validateYaml(yamlContent);
     }
-  }, []);
+  }, [initialConfig, yamlContent]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {

@@ -31,7 +31,7 @@ export function ProjectDetail({ projectId, userId }: ProjectDetailProps) {
 
   useEffect(() => {
     loadProject();
-  }, [projectId, loadProject]);
+  }, [projectId]);
 
   const loadProject = async () => {
     try {

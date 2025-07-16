@@ -26,7 +26,7 @@ export function ApprovalHistory({ screenshotId, className = '' }: ApprovalHistor
 
   useEffect(() => {
     loadHistory();
-  }, [screenshotId, loadHistory]);
+  }, [screenshotId]);
 
   const loadHistory = async () => {
     try {

@@ -29,7 +29,7 @@ export function ProjectConfig({ projectId, userId }: ProjectConfigProps) {
 
   useEffect(() => {
     loadProject();
-  }, [projectId, loadProject]);
+  }, [projectId]);
 
   const loadProject = async () => {
     try {
