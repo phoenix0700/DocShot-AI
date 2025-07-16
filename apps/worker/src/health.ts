@@ -3,9 +3,7 @@ import { logger } from './lib/logger';
 import Redis from 'ioredis';
 import { createSupabaseClient } from '@docshot/database';
 
-const PORT = process.env.HEALTH_CHECK_PORT || 3002;
-
-export function startHealthCheckServer(port: number = 3002) {
+export function startHealthCheckServer(port: number = 3001) {
   const server = createServer(async (req, res) => {
     if (req.url === '/health' && req.method === 'GET') {
       try {

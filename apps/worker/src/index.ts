@@ -73,8 +73,8 @@ const notificationWorker = new Worker('notification', notificationProcessor, {
   });
 });
 
-// Start health check server on alternative port
-const healthPort = process.env.WORKER_HEALTH_PORT || 3002;
+// Start health check server
+const healthPort = process.env.PORT || process.env.WORKER_HEALTH_PORT || 3001;
 startHealthCheckServer(Number(healthPort));
 
 logger.info('DocShot AI Worker started', {

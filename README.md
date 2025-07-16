@@ -182,7 +182,7 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed deployment instruction
 
 #### Option 1: One-Click Deploy (Recommended)
 1. **Frontend**: Click the "Deploy to Vercel" button above
-2. **Worker**: Deploy to Railway using the template (coming soon)
+2. **Worker**: [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/docshot-worker)
 
 #### Option 2: Manual Deploy
 1. **Deploy database to Supabase**

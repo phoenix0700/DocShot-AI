@@ -1,0 +1,21 @@
+[build]
+builder = "nixpacks"
+buildCommand = "pnpm install && pnpm build --filter=worker"
+watchPatterns = ["apps/worker/**"]
+
+[deploy]
+startCommand = "cd apps/worker && pnpm start"
+healthcheckPath = "/health"
+healthcheckTimeout = 100
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+[[services]]
+name = "docshot-worker"
+
+[services.variables]
+NODE_ENV = "production"
+PORT = "3001"
+SCREENSHOT_CONCURRENCY = "2"
+DIFF_CONCURRENCY = "3"
+NOTIFICATION_CONCURRENCY = "5"
