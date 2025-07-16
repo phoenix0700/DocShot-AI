@@ -202,13 +202,28 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed deployment instruction
 
 ## Environment Variables
 
-See `.env.example` for all required environment variables:
+### Development
+See `.env.example` for all required environment variables
+
+### Production
+See `.env.production.template` for production configuration:
 
 - `SUPABASE_*` - Database credentials
-- `CLERK_*` - Authentication keys
-- `REDIS_URL` - Queue storage
-- `S3_*` - Screenshot storage
+- `CLERK_*` - Authentication keys  
+- `REDIS_URL` - Queue storage (Upstash)
+- `S3_*` - Screenshot storage (Cloudflare R2)
 - `SMTP_*` - Email notifications
+
+**Production Setup:**
+```bash
+# Test your production services
+pnpm test:services
+
+# Deploy everything
+pnpm deploy:production
+```
+
+See `PRODUCTION_SETUP.md` for detailed instructions.
 
 ## Contributing
 
