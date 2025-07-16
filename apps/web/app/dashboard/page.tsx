@@ -1,7 +1,7 @@
 import { auth } from '@clerk/nextjs';
 import { redirect } from 'next/navigation';
 import { userService } from '../../lib/user-service';
-import { RealProjectDashboard } from '../../components/dashboard/RealProjectDashboard';
+import { EnhancedDashboard } from '../../components/dashboard/EnhancedDashboard';
 
 export default async function DashboardPage() {
   const { userId } = auth();
@@ -17,9 +17,5 @@ export default async function DashboardPage() {
     redirect('/sign-in');
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <RealProjectDashboard user={user} />
-    </div>
-  );
+  return <EnhancedDashboard user={user} />;
 }

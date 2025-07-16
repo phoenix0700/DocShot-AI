@@ -20,9 +20,10 @@ interface Project {
 interface ProjectCardProps {
   project: Project;
   onDeleted: () => void;
+  enhanced?: boolean;
 }
 
-export function ProjectCard({ project, onDeleted }: ProjectCardProps) {
+export function ProjectCard({ project, onDeleted, enhanced = false }: ProjectCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
