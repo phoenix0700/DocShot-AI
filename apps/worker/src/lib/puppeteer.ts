@@ -154,12 +154,12 @@ class ScreenshotCapture {
       // Additional wait if specified
       if (options.waitForTimeout) {
         console.log(`Additional wait: ${options.waitForTimeout}ms`);
-        await new Promise(resolve => setTimeout(resolve, options.waitForTimeout));
+        await new Promise((resolve) => setTimeout(resolve, options.waitForTimeout));
       }
 
       // Wait for any pending animations/transitions
       console.log('Waiting for page stabilization...');
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Scroll to top to ensure consistent screenshots
       await page.evaluate(() => {
@@ -178,7 +178,7 @@ class ScreenshotCapture {
 
         // Scroll element into view
         await element.scrollIntoView();
-        await new Promise(resolve => setTimeout(resolve, 200)); // Brief wait after scroll
+        await new Promise((resolve) => setTimeout(resolve, 200)); // Brief wait after scroll
 
         screenshotBuffer = await element.screenshot({
           type: 'png',
