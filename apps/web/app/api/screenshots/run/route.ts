@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs';
 import { getSupabaseClient } from '@docshot/database';
 import { createQueueManager } from '@docshot/shared';
-import { userService } from '../../../lib/user-service';
+import { userService } from '../../../../lib/user-service';
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,14 +30,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Get project screenshots with user context
-    const { data: screenshots, error } = await supabase
-      .withUserContext(userId, async (client) => {
-        return client
-          .from('screenshots')
-          .select('*')
-          .eq('project_id', projectId)
-          .eq('status', 'pending');
-      });
+    const { data: screenshots, error } = await supabase.withUserContext(userId, async (client) => {
+      return client
+        .from('screenshots')
+        .select('*')
+        .eq('project_id', projectId)
+        .eq('status', 'pending');
+    });
 
     if (error) {
       console.error('Database error:', error);

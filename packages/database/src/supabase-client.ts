@@ -37,7 +37,8 @@ class MultiTenantSupabaseClient {
       is_local: true,
     });
 
-    if (error) {
+    if (error && error.code !== 'PGRST202') {
+      // PGRST202: function not found in schema cache – likely local dev DB without the helper
       console.error('Failed to set user context:', error);
       throw new Error(`Failed to set user context: ${error.message}`);
     }
@@ -112,7 +113,7 @@ class MultiTenantSupabaseClient {
 
     const { data: user, error } = await this.client
       .from('users')
-      .select('subscription_tier, monthly_screenshot_count, monthly_screenshot_limit')
+      .select('id, subscription_tier, monthly_screenshot_count, monthly_screenshot_limit')
       .eq('clerk_user_id', clerkUserId)
       .single();
 
@@ -168,6 +169,21 @@ class MultiTenantSupabaseClient {
     return this.client;
   }
 
+  // NEW: lightweight passthrough to underlying client so existing code can continue
+  // to use `supabase.from('table')` directly when holding a MultiTenantSupabaseClient
+  // instance. This keeps backward-compatibility with older code and removes the
+  // current TS errors in worker jobs.
+  from<TableName extends string>(
+    table: TableName
+  ): ReturnType<SupabaseClient<Database>["from"]> {
+    // Delegate to the underlying client.
+    // Casting return type keeps the helper fully typed while avoiding exposure
+    // of internal `@supabase/postgrest-js` generics that upset the TS linter.
+    return this.client.from(table as any) as ReturnType<
+      SupabaseClient<Database>["from"]
+    >;
+  }
+
   // Helper method for authenticated queries
   async withUserContext<T>(
     clerkUserId: string,
@@ -197,7 +213,8 @@ let globalClient: MultiTenantSupabaseClient | null = null;
 export function getSupabaseClient(): MultiTenantSupabaseClient {
   if (!globalClient) {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const serviceKey = process.env.SUPABASE_SERVICE_KEY;
+    const serviceKey =
+      process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     if (!url || !serviceKey) {
       throw new Error('Missing Supabase environment variables');

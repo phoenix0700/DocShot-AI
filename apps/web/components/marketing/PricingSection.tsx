@@ -20,10 +20,7 @@ export function PricingSection() {
         'GitHub integration',
         'Community support',
       ],
-      limitations: [
-        'No advanced scheduling',
-        'Basic analytics only',
-      ],
+      limitations: ['No advanced scheduling', 'Basic analytics only'],
       cta: 'Start Free',
       href: isSignedIn ? '/dashboard' : '/sign-up',
       popular: false,
@@ -93,8 +90,8 @@ export function PricingSection() {
             Simple, transparent pricing
           </h2>
           <p className="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">
-            Start free and scale as you grow. No hidden fees, no surprises. 
-            Cancel anytime with 30-day money-back guarantee.
+            Start free and scale as you grow. No hidden fees, no surprises. Cancel anytime with
+            30-day money-back guarantee.
           </p>
         </div>
 
@@ -135,9 +132,7 @@ export function PricingSection() {
                 <h3 className="text-2xl font-bold text-gray-900">{plan.name}</h3>
                 <p className="mt-2 text-gray-600">{plan.description}</p>
                 <div className="mt-6">
-                  <span className="text-5xl font-bold text-gray-900">
-                    ${plan.price}
-                  </span>
+                  <span className="text-5xl font-bold text-gray-900">${plan.price}</span>
                   <span className="text-lg text-gray-600">/month</span>
                 </div>
               </div>
@@ -145,16 +140,32 @@ export function PricingSection() {
               <ul className="mt-8 space-y-3">
                 {plan.features.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-start">
-                    <svg className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    <svg
+                      className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                     <span className="text-gray-700">{feature}</span>
                   </li>
                 ))}
                 {plan.limitations.map((limitation, limitationIndex) => (
                   <li key={limitationIndex} className="flex items-start">
-                    <svg className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                    <svg
+                      className="w-5 h-5 text-gray-400 mr-3 mt-0.5 flex-shrink-0"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                     <span className="text-gray-500 line-through">{limitation}</span>
                   </li>
@@ -176,9 +187,7 @@ export function PricingSection() {
               </div>
 
               {plan.name === 'Starter' && (
-                <p className="mt-4 text-xs text-center text-gray-500">
-                  No credit card required
-                </p>
+                <p className="mt-4 text-xs text-center text-gray-500">No credit card required</p>
               )}
             </div>
           ))}
@@ -189,8 +198,8 @@ export function PricingSection() {
           <div className="px-8 py-12 text-center">
             <h3 className="text-3xl font-bold text-gray-900">Enterprise</h3>
             <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-              Custom solutions for large organizations with specific requirements. 
-              Get dedicated support and tailored features for your team.
+              Custom solutions for large organizations with specific requirements. Get dedicated
+              support and tailored features for your team.
             </p>
             <div className="mt-8">
               <Button size="lg" asChild>
@@ -202,8 +211,16 @@ export function PricingSection() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {enterpriseFeatures.map((feature, index) => (
                 <div key={index} className="flex items-center">
-                  <svg className="w-5 h-5 text-blue-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  <svg
+                    className="w-5 h-5 text-blue-500 mr-3 flex-shrink-0"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                   <span className="text-gray-700">{feature}</span>
                 </div>
@@ -214,9 +231,7 @@ export function PricingSection() {
 
         {/* FAQ preview */}
         <div className="mt-16 text-center">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">
-            Questions about pricing?
-          </h3>
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">Questions about pricing?</h3>
           <p className="text-gray-600 mb-6">
             Check out our FAQ section or contact our team for personalized help.
           </p>

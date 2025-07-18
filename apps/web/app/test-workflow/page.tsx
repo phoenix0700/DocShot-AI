@@ -39,16 +39,12 @@ export default function TestWorkflowPage() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-lg shadow-sm p-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">
-            DocShot AI - Workflow Testing
-          </h1>
-          
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">DocShot AI - Workflow Testing</h1>
+
           <div className="space-y-6">
             {/* URL Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Target URL
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Target URL</label>
               <input
                 type="url"
                 value={url}

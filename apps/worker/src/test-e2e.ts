@@ -121,14 +121,14 @@ async function testEndToEndWorkflow() {
       const emailTemplate = emailService.generateDiffEmail({
         projectName: 'E2E Test Project',
         screenshotName: 'Homepage',
-        diffPercentage: diffResult.percentageDiff,
-        changedPixels: diffResult.pixelDiff,
+        percentageDiff: diffResult.percentageDiff,
+        pixelDiff: diffResult.pixelDiff,
         totalPixels: diffResult.totalPixels,
-        diffImageUrl: 'https://example.com/diff.png',
-        originalImageUrl: 'https://example.com/original.png',
-        newImageUrl: 'https://example.com/new.png',
+        diffUrl: 'https://example.com/diff.png',
+        screenshotUrl: 'https://example.com/new.png',
         approvalUrl: 'https://app.docshot.ai/approve/123',
-        rejectUrl: 'https://app.docshot.ai/reject/123',
+        // Additional fields removed in new API, rejectUrl deprecated
+        // rejectUrl: 'https://app.docshot.ai/reject/123',
       });
 
       console.log('  ✅ Email template generated successfully');
@@ -145,24 +145,21 @@ async function testEndToEndWorkflow() {
 
     // Step 6: Test Database Connection (if configured)
     console.log('\nStep 6: Testing Database Connection');
-    
+
     try {
       if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
         const supabase = createSupabaseClient(
           process.env.NEXT_PUBLIC_SUPABASE_URL,
           process.env.SUPABASE_SERVICE_KEY
         );
-        
+
         // Test a simple query
-        const { data, error } = await supabase
-          .from('projects')
-          .select('count(*)')
-          .single();
-        
-        if (error && error.code !== 'PGRST116') { // PGRST116 is "no rows returned" which is OK
+        const { error } = await supabase.from('projects').select('count(*)').single();
+
+        if (error && error.code !== 'PGRST116') {
           throw error;
         }
-        
+
         console.log('  ✅ Database connection successful');
         console.log('  📊 Projects table accessible');
       } else {
@@ -172,39 +169,15 @@ async function testEndToEndWorkflow() {
       console.log('  ⚠️  Database test failed:', dbError instanceof Error ? dbError.message : 'Unknown error');
     }
 
-    // Step 7: Summary
-    console.log('\n🎉 End-to-End Test Summary:');
-    console.log('┌──────────────────────────────────────────────────────────────┐');
-    console.log('│                     Component Status                        │');
-    console.log('├──────────────────────────────────────────────────────────────┤');
-    console.log('│ ✅ Screenshot Capture Engine ......................... PASS │');
-    console.log('│ ✅ Queue Management System ........................... PASS │');
-    console.log('│ ✅ Visual Diff Detection ............................. PASS │');
-    console.log('│ ✅ Email Template Generation ......................... PASS │');
-    console.log('│ ✅ Job Processing Workflow ........................... PASS │');
-    console.log('└──────────────────────────────────────────────────────────────┘');
-    
-    console.log('\n📁 Test Artifacts:');
-    console.log(`   • Screenshot 1: ${screenshotPath}`);
-    console.log(`   • Diff Image: ${path.join(testDir, 'e2e-test-diff.png')}`);
-    console.log(`   • Email Template: ${path.join(testDir, 'e2e-test-email.html')}`);
-    
-    console.log('\n✨ All core DocShot AI components are functioning correctly!');
-    console.log('🚀 The system is ready for production use.');
+    // Summary
+    console.log('\n✨ End-to-End Test completed');
 
   } catch (error) {
     console.error('\n❌ End-to-End test failed:', error);
-    
-    if (error instanceof Error) {
-      console.error('Error details:', error.message);
-      console.error('Stack trace:', error.stack);
-    }
-    
     process.exit(1);
   }
 }
 
-// Run the test
 if (require.main === module) {
   testEndToEndWorkflow().catch(console.error);
 }

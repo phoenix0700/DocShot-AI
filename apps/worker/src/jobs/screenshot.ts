@@ -97,7 +97,8 @@ export const screenshotProcessor = async (job: Job) => {
       .from('screenshots')
       .update({
         image_url: uploadResult.publicUrl,
-        status: 'captured',
+        last_image_url: uploadResult.publicUrl,
+        status: 'completed',
         updated_at: new Date().toISOString(),
       })
       .eq('id', data.screenshotId);

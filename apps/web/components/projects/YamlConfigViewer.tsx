@@ -15,24 +15,25 @@ export function YamlConfigViewer({ project }: YamlConfigViewerProps) {
 
   const generateYamlConfig = () => {
     const config = {
-      version: "1.0",
+      version: '1.0',
       project: {
         name: project.name,
         description: project.description || undefined,
         url: project.url,
       },
-      screenshots: project.screenshots?.map(screenshot => ({
-        name: screenshot.name,
-        url: screenshot.url,
-        ...(screenshot.selector && { selector: screenshot.selector }),
-        viewport: {
-          width: screenshot.viewport_width,
-          height: screenshot.viewport_height,
-        },
-        fullPage: screenshot.full_page,
-        ...(screenshot.wait_for_selector && { waitForSelector: screenshot.wait_for_selector }),
-        ...(screenshot.wait_for_timeout && { waitForTimeout: screenshot.wait_for_timeout }),
-      })) || [],
+      screenshots:
+        project.screenshots?.map((screenshot) => ({
+          name: screenshot.name,
+          url: screenshot.url,
+          ...(screenshot.selector && { selector: screenshot.selector }),
+          viewport: {
+            width: screenshot.viewport_width,
+            height: screenshot.viewport_height,
+          },
+          fullPage: screenshot.full_page,
+          ...(screenshot.wait_for_selector && { waitForSelector: screenshot.wait_for_selector }),
+          ...(screenshot.wait_for_timeout && { waitForTimeout: screenshot.wait_for_timeout }),
+        })) || [],
       ...(project.schedule && {
         schedule: project.schedule,
       }),
@@ -94,10 +95,7 @@ export function YamlConfigViewer({ project }: YamlConfigViewerProps) {
           >
             {copied ? '✓ Copied!' : 'Copy'}
           </Button>
-          <Button
-            onClick={downloadConfig}
-            className="bg-blue-600 hover:bg-blue-700"
-          >
+          <Button onClick={downloadConfig} className="bg-blue-600 hover:bg-blue-700">
             Download
           </Button>
         </div>
@@ -115,19 +113,22 @@ export function YamlConfigViewer({ project }: YamlConfigViewerProps) {
         <h4 className="text-sm font-medium text-blue-900 mb-2">🚀 How to use this configuration</h4>
         <div className="text-sm text-blue-800 space-y-2">
           <p>
-            <strong>1. Save the configuration:</strong> Download or copy the YAML above and save it as 
-            <code className="bg-blue-100 px-1 rounded mx-1">.docshot.yml</code> in your project root.
+            <strong>1. Save the configuration:</strong> Download or copy the YAML above and save it
+            as
+            <code className="bg-blue-100 px-1 rounded mx-1">.docshot.yml</code> in your project
+            root.
           </p>
           <p>
-            <strong>2. Install DocShot CLI:</strong> 
+            <strong>2. Install DocShot CLI:</strong>
             <code className="bg-blue-100 px-1 rounded mx-1">npm install -g @docshot/cli</code>
           </p>
           <p>
-            <strong>3. Run screenshots:</strong> 
+            <strong>3. Run screenshots:</strong>
             <code className="bg-blue-100 px-1 rounded mx-1">docshot run</code>
           </p>
           <p>
-            <strong>4. Automate with CI/CD:</strong> Add the run command to your GitHub Actions, Jenkins, or other CI/CD pipeline.
+            <strong>4. Automate with CI/CD:</strong> Add the run command to your GitHub Actions,
+            Jenkins, or other CI/CD pipeline.
           </p>
         </div>
       </div>
@@ -181,10 +182,12 @@ export function YamlConfigViewer({ project }: YamlConfigViewerProps) {
       <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
         <h4 className="text-sm font-medium text-gray-900 mb-3">GitHub Actions Example</h4>
         <p className="text-sm text-gray-600 mb-3">
-          Add this to <code className="bg-gray-200 px-1 rounded">.github/workflows/screenshots.yml</code> to automate screenshot updates:
+          Add this to{' '}
+          <code className="bg-gray-200 px-1 rounded">.github/workflows/screenshots.yml</code> to
+          automate screenshot updates:
         </p>
         <pre className="bg-gray-900 text-gray-100 text-xs p-3 rounded overflow-x-auto">
-{`name: Update Screenshots
+          {`name: Update Screenshots
 
 on:
   schedule:
@@ -244,7 +247,7 @@ function objectToYaml(obj: any, indent = 0): string {
       for (const item of value) {
         if (typeof item === 'object' && item !== null) {
           yaml += `${spaces}  -\n`;
-          yaml += objectToYaml(item, indent + 2).replace(/^  /, '    ');
+          yaml += objectToYaml(item, indent + 2).replace(/^ {2}/, '    ');
         } else {
           yaml += `${spaces}  - ${item}\n`;
         }

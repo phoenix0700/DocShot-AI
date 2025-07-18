@@ -60,7 +60,7 @@ export class QueueManager {
 
     return queue.add('capture', validatedData, {
       ...options,
-      jobId: `screenshot-${validatedData.screenshotId}`,
+      jobId: `screenshot-${validatedData.screenshotId}-${Date.now()}`,
       delay: options?.delay || 0,
     });
   }

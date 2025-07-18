@@ -1,54 +1,61 @@
+/* eslint-disable react/no-unescaped-entities */
 export function TestimonialsSection() {
   const testimonials = [
     {
-      quote: "DocShot AI saved us 10+ hours per week on documentation maintenance. Our screenshots are always up-to-date and our docs look professional.",
-      author: "Sarah Chen",
-      role: "Head of Documentation",
-      company: "TechFlow Inc",
-      avatar: "SC",
+      quote:
+        'DocShot AI saved us 10+ hours per week on documentation maintenance. Our screenshots are always up-to-date and our docs look professional.',
+      author: 'Sarah Chen',
+      role: 'Head of Documentation',
+      company: 'TechFlow Inc',
+      avatar: 'SC',
     },
     {
-      quote: "The visual diff detection is incredible. We catch UI regressions immediately and our release notes always have accurate screenshots.",
-      author: "Marcus Rodriguez",
-      role: "Product Manager",
-      company: "DataSync Pro",
-      avatar: "MR",
+      quote:
+        'The visual diff detection is incredible. We catch UI regressions immediately and our release notes always have accurate screenshots.',
+      author: 'Marcus Rodriguez',
+      role: 'Product Manager',
+      company: 'DataSync Pro',
+      avatar: 'MR',
     },
     {
-      quote: "Integration with GitHub was seamless. Screenshots automatically update in our docs repository whenever we deploy changes.",
-      author: "Emily Watson",
-      role: "Lead Developer",
-      company: "CloudBase",
-      avatar: "EW",
+      quote:
+        'Integration with GitHub was seamless. Screenshots automatically update in our docs repository whenever we deploy changes.',
+      author: 'Emily Watson',
+      role: 'Lead Developer',
+      company: 'CloudBase',
+      avatar: 'EW',
     },
     {
-      quote: "Finally, a solution that scales with our team. We went from manual screenshot hell to automated perfection in just one week.",
-      author: "David Kim",
-      role: "Engineering Manager",
-      company: "ScaleUp Solutions",
-      avatar: "DK",
+      quote:
+        'Finally, a solution that scales with our team. We went from manual screenshot hell to automated perfection in just one week.',
+      author: 'David Kim',
+      role: 'Engineering Manager',
+      company: 'ScaleUp Solutions',
+      avatar: 'DK',
     },
     {
-      quote: "The ROI was immediate. We reduced documentation maintenance time by 80% and improved our user onboarding experience significantly.",
-      author: "Lisa Thompson",
-      role: "VP of Customer Success",
-      company: "UserFirst",
-      avatar: "LT",
+      quote:
+        'The ROI was immediate. We reduced documentation maintenance time by 80% and improved our user onboarding experience significantly.',
+      author: 'Lisa Thompson',
+      role: 'VP of Customer Success',
+      company: 'UserFirst',
+      avatar: 'LT',
     },
     {
-      quote: "DocShot AI's enterprise features give us the security and control we need. The team collaboration tools are excellent.",
-      author: "James Miller",
-      role: "CTO",
-      company: "SecureTech",
-      avatar: "JM",
+      quote:
+        "DocShot AI's enterprise features give us the security and control we need. The team collaboration tools are excellent.",
+      author: 'James Miller',
+      role: 'CTO',
+      company: 'SecureTech',
+      avatar: 'JM',
     },
   ];
 
   const stats = [
-    { value: "500+", label: "Teams using DocShot AI" },
-    { value: "10,000+", label: "Screenshots automated" },
-    { value: "80%", label: "Time saved on docs" },
-    { value: "99.9%", label: "Uptime guarantee" },
+    { value: '500+', label: 'Teams using DocShot AI' },
+    { value: '10,000+', label: 'Screenshots automated' },
+    { value: '80%', label: 'Time saved on docs' },
+    { value: '99.9%', label: 'Uptime guarantee' },
   ];
 
   return (
@@ -73,9 +80,7 @@ export function TestimonialsSection() {
 
         {/* Testimonials */}
         <div className="text-center mb-16">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">
-            What our customers say
-          </h3>
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">What our customers say</h3>
           <p className="text-lg text-gray-600">
             Join hundreds of teams who have transformed their documentation workflow
           </p>
@@ -118,13 +123,19 @@ export function TestimonialsSection() {
 
         {/* Customer logos */}
         <div className="mt-20 text-center">
-          <p className="text-sm text-gray-500 mb-8">
-            Join teams from these companies and more
-          </p>
+          <p className="text-sm text-gray-500 mb-8">Join teams from these companies and more</p>
           <div className="flex flex-wrap justify-center items-center gap-12 opacity-60">
             {[
-              'Stripe', 'GitHub', 'Vercel', 'Linear', 'Notion', 
-              'Figma', 'Slack', 'Discord', 'Shopify', 'Atlassian'
+              'Stripe',
+              'GitHub',
+              'Vercel',
+              'Linear',
+              'Notion',
+              'Figma',
+              'Slack',
+              'Discord',
+              'Shopify',
+              'Atlassian',
             ].map((company) => (
               <div key={company} className="text-gray-400 font-semibold text-lg">
                 {company}
@@ -140,8 +151,8 @@ export function TestimonialsSection() {
               Ready to transform your documentation workflow?
             </h3>
             <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-              Join thousands of teams who have already automated their screenshot management. 
-              Start your free trial today and see the difference.
+              Join thousands of teams who have already automated their screenshot management. Start
+              your free trial today and see the difference.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200">

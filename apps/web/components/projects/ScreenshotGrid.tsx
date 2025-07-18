@@ -12,6 +12,42 @@ interface ScreenshotGridProps {
 
 export function ScreenshotGrid({ screenshots, projectId }: ScreenshotGridProps) {
   const [selectedScreenshot, setSelectedScreenshot] = useState<Screenshot | null>(null);
+  const [runningScreenshots, setRunningScreenshots] = useState<Set<string>>(new Set());
+
+  const handleRunSingleScreenshot = async (screenshotId: string) => {
+    if (runningScreenshots.has(screenshotId)) return;
+
+    setRunningScreenshots(prev => new Set(prev).add(screenshotId));
+
+    try {
+      const response = await fetch('/api/screenshots/run-single', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ screenshotId }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Screenshot job queued:', data);
+      
+      // Refresh the page to show updated status
+      window.location.reload();
+    } catch (error) {
+      console.error('Error running screenshot:', error);
+      alert('Failed to run screenshot. Please try again.');
+    } finally {
+      setRunningScreenshots(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(screenshotId);
+        return newSet;
+      });
+    }
+  };
 
   if (screenshots.length === 0) {
     return (
@@ -37,6 +73,8 @@ export function ScreenshotGrid({ screenshots, projectId }: ScreenshotGridProps) 
             key={screenshot.id}
             screenshot={screenshot}
             onSelect={() => setSelectedScreenshot(screenshot)}
+            runningScreenshots={runningScreenshots}
+            onRunScreenshot={handleRunSingleScreenshot}
           />
         ))}
       </div>
@@ -46,6 +84,8 @@ export function ScreenshotGrid({ screenshots, projectId }: ScreenshotGridProps) 
         <ScreenshotDetailModal
           screenshot={selectedScreenshot}
           onClose={() => setSelectedScreenshot(null)}
+          runningScreenshots={runningScreenshots}
+          onRunScreenshot={handleRunSingleScreenshot}
         />
       )}
     </div>
@@ -55,9 +95,11 @@ export function ScreenshotGrid({ screenshots, projectId }: ScreenshotGridProps) 
 interface ScreenshotCardProps {
   screenshot: Screenshot;
   onSelect: () => void;
+  runningScreenshots: Set<string>;
+  onRunScreenshot: (screenshotId: string) => void;
 }
 
-function ScreenshotCard({ screenshot, onSelect }: ScreenshotCardProps) {
+function ScreenshotCard({ screenshot, onSelect, runningScreenshots, onRunScreenshot }: ScreenshotCardProps) {
   const statusColors = {
     pending: 'bg-yellow-100 text-yellow-800',
     processing: 'bg-blue-100 text-blue-800',
@@ -73,12 +115,17 @@ function ScreenshotCard({ screenshot, onSelect }: ScreenshotCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={onSelect}>
+    <div
+      className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+      onClick={onSelect}
+    >
       <div className="p-4">
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
           <h3 className="text-sm font-medium text-gray-900 truncate">{screenshot.name}</h3>
-          <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusColors[screenshot.status]}`}>
+          <span
+            className={`px-2 py-1 text-xs font-medium rounded-full ${statusColors[screenshot.status]}`}
+          >
             {statusIcons[screenshot.status]} {screenshot.status}
           </span>
         </div>
@@ -111,7 +158,9 @@ function ScreenshotCard({ screenshot, onSelect }: ScreenshotCardProps) {
           </div>
           <div className="flex justify-between">
             <span>Viewport:</span>
-            <span>{screenshot.viewport_width}×{screenshot.viewport_height}</span>
+            <span>
+              {screenshot.viewport_width}×{screenshot.viewport_height}
+            </span>
           </div>
           {screenshot.selector && (
             <div className="flex justify-between">
@@ -124,7 +173,7 @@ function ScreenshotCard({ screenshot, onSelect }: ScreenshotCardProps) {
           {screenshot.last_captured_at && (
             <div className="flex justify-between">
               <span>Last captured:</span>
-              <span>{new Date(screenshot.last_captured_at).toLocaleDateString()}</span>
+              <span>{new Date(screenshot.last_captured_at).toLocaleDateString('en-US')}</span>
             </div>
           )}
         </div>
@@ -144,12 +193,13 @@ function ScreenshotCard({ screenshot, onSelect }: ScreenshotCardProps) {
           <Button
             size="sm"
             className="bg-blue-600 hover:bg-blue-700"
+            disabled={runningScreenshots.has(screenshot.id)}
             onClick={(e) => {
               e.stopPropagation();
-              // Handle run screenshot
+              onRunScreenshot(screenshot.id);
             }}
           >
-            Run Now
+            {runningScreenshots.has(screenshot.id) ? 'Running...' : 'Run Now'}
           </Button>
         </div>
       </div>
@@ -160,21 +210,25 @@ function ScreenshotCard({ screenshot, onSelect }: ScreenshotCardProps) {
 interface ScreenshotDetailModalProps {
   screenshot: Screenshot;
   onClose: () => void;
+  runningScreenshots: Set<string>;
+  onRunScreenshot: (screenshotId: string) => void;
 }
 
-function ScreenshotDetailModal({ screenshot, onClose }: ScreenshotDetailModalProps) {
+function ScreenshotDetailModal({ screenshot, onClose, runningScreenshots, onRunScreenshot }: ScreenshotDetailModalProps) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="px-6 py-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900">{screenshot.name}</h3>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600"
-            >
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -198,7 +252,9 @@ function ScreenshotDetailModal({ screenshot, onClose }: ScreenshotDetailModalPro
                   <div className="text-center">
                     <span className="text-4xl">📸</span>
                     <p className="text-gray-500 mt-2">No screenshot available</p>
-                    <p className="text-sm text-gray-400">Run this screenshot to generate an image</p>
+                    <p className="text-sm text-gray-400">
+                      Run this screenshot to generate an image
+                    </p>
                   </div>
                 </div>
               )}
@@ -211,7 +267,12 @@ function ScreenshotDetailModal({ screenshot, onClose }: ScreenshotDetailModalPro
                 <div>
                   <dt className="text-xs font-medium text-gray-500">URL</dt>
                   <dd className="text-sm text-gray-900 mt-1">
-                    <a href={screenshot.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
+                    <a
+                      href={screenshot.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800"
+                    >
                       {screenshot.url}
                     </a>
                   </dd>
@@ -251,20 +312,23 @@ function ScreenshotDetailModal({ screenshot, onClose }: ScreenshotDetailModalPro
                 {screenshot.wait_for_timeout && (
                   <div>
                     <dt className="text-xs font-medium text-gray-500">Wait Timeout</dt>
-                    <dd className="text-sm text-gray-900 mt-1">
-                      {screenshot.wait_for_timeout}ms
-                    </dd>
+                    <dd className="text-sm text-gray-900 mt-1">{screenshot.wait_for_timeout}ms</dd>
                   </div>
                 )}
                 <div>
                   <dt className="text-xs font-medium text-gray-500">Status</dt>
                   <dd className="text-sm text-gray-900 mt-1">
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                      screenshot.status === 'completed' ? 'bg-green-100 text-green-800' :
-                      screenshot.status === 'failed' ? 'bg-red-100 text-red-800' :
-                      screenshot.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                      'bg-yellow-100 text-yellow-800'
-                    }`}>
+                    <span
+                      className={`px-2 py-1 text-xs font-medium rounded-full ${
+                        screenshot.status === 'completed'
+                          ? 'bg-green-100 text-green-800'
+                          : screenshot.status === 'failed'
+                            ? 'bg-red-100 text-red-800'
+                            : screenshot.status === 'processing'
+                              ? 'bg-blue-100 text-blue-800'
+                              : 'bg-yellow-100 text-yellow-800'
+                      }`}
+                    >
                       {screenshot.status}
                     </span>
                   </dd>
@@ -273,24 +337,26 @@ function ScreenshotDetailModal({ screenshot, onClose }: ScreenshotDetailModalPro
                   <div>
                     <dt className="text-xs font-medium text-gray-500">Last Captured</dt>
                     <dd className="text-sm text-gray-900 mt-1">
-                      {new Date(screenshot.last_captured_at).toLocaleString()}
+                      {new Date(screenshot.last_captured_at).toLocaleString('en-US')}
                     </dd>
                   </div>
                 )}
                 {screenshot.last_error && (
                   <div>
                     <dt className="text-xs font-medium text-gray-500">Last Error</dt>
-                    <dd className="text-sm text-red-600 mt-1">
-                      {screenshot.last_error}
-                    </dd>
+                    <dd className="text-sm text-red-600 mt-1">{screenshot.last_error}</dd>
                   </div>
                 )}
               </dl>
 
               {/* Actions */}
               <div className="mt-6 space-y-3">
-                <Button className="w-full bg-blue-600 hover:bg-blue-700">
-                  Run Screenshot Now
+                <Button 
+                  className="w-full bg-blue-600 hover:bg-blue-700"
+                  disabled={runningScreenshots.has(screenshot.id)}
+                  onClick={() => onRunScreenshot(screenshot.id)}
+                >
+                  {runningScreenshots.has(screenshot.id) ? 'Running...' : 'Run Screenshot Now'}
                 </Button>
                 <div className="grid grid-cols-2 gap-3">
                   <Button variant="outline" className="w-full">

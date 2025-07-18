@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client';
 
 import { useState } from 'react';
@@ -39,10 +40,11 @@ export function HistoryFilters({ onFilterChange }: HistoryFiltersProps) {
     onFilterChange(clearedFilters);
   };
 
-  const hasActiveFilters = filters.status !== 'all' || 
-                          filters.changesOnly || 
-                          filters.dateRange !== 'all' || 
-                          filters.search.length > 0;
+  const hasActiveFilters =
+    filters.status !== 'all' ||
+    filters.changesOnly ||
+    filters.dateRange !== 'all' ||
+    filters.search.length > 0;
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-6">
@@ -51,7 +53,9 @@ export function HistoryFilters({ onFilterChange }: HistoryFiltersProps) {
         <div className="flex flex-col sm:flex-row gap-4">
           {/* Search */}
           <div className="flex-1">
-            <label htmlFor="search" className="sr-only">Search</label>
+            <label htmlFor="search" className="sr-only">
+              Search
+            </label>
             <div className="relative">
               <svg
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
@@ -182,7 +186,7 @@ export function HistoryFilters({ onFilterChange }: HistoryFiltersProps) {
                   </button>
                 </span>
               )}
-              
+
               {filters.changesOnly && (
                 <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
                   Changes only
@@ -194,12 +198,16 @@ export function HistoryFilters({ onFilterChange }: HistoryFiltersProps) {
                   </button>
                 </span>
               )}
-              
+
               {filters.dateRange !== 'all' && (
                 <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                  {filters.dateRange === '24h' ? 'Last 24h' : 
-                   filters.dateRange === '7d' ? 'Last 7 days' : 
-                   filters.dateRange === '30d' ? 'Last 30 days' : filters.dateRange}
+                  {filters.dateRange === '24h'
+                    ? 'Last 24h'
+                    : filters.dateRange === '7d'
+                      ? 'Last 7 days'
+                      : filters.dateRange === '30d'
+                        ? 'Last 30 days'
+                        : filters.dateRange}
                   <button
                     onClick={() => handleFilterUpdate({ dateRange: 'all' })}
                     className="ml-1 text-green-600 hover:text-green-800"
@@ -208,7 +216,7 @@ export function HistoryFilters({ onFilterChange }: HistoryFiltersProps) {
                   </button>
                 </span>
               )}
-              
+
               {filters.search && (
                 <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
                   Search: "{filters.search}"
@@ -221,7 +229,7 @@ export function HistoryFilters({ onFilterChange }: HistoryFiltersProps) {
                 </span>
               )}
             </div>
-            
+
             <Button
               onClick={clearFilters}
               variant="ghost"

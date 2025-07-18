@@ -175,10 +175,10 @@ export function ScreenshotHistory({ projectId, screenshotId }: ScreenshotHistory
       // Filter by project and screenshot if specified
       let filtered = mockHistory;
       if (projectId) {
-        filtered = filtered.filter(entry => entry.projectId === projectId);
+        filtered = filtered.filter((entry) => entry.projectId === projectId);
       }
       if (screenshotId) {
-        filtered = filtered.filter(entry => entry.screenshotId === screenshotId);
+        filtered = filtered.filter((entry) => entry.screenshotId === screenshotId);
       }
 
       setHistory(filtered);
@@ -196,19 +196,19 @@ export function ScreenshotHistory({ projectId, screenshotId }: ScreenshotHistory
 
     // Apply status filter
     if (filters.status && filters.status !== 'all') {
-      filtered = filtered.filter(entry => entry.status === filters.status);
+      filtered = filtered.filter((entry) => entry.status === filters.status);
     }
 
     // Apply change detection filter
     if (filters.changesOnly) {
-      filtered = filtered.filter(entry => entry.changeDetected);
+      filtered = filtered.filter((entry) => entry.changeDetected);
     }
 
     // Apply date range filter
     if (filters.dateRange && filters.dateRange !== 'all') {
       const now = new Date();
       let cutoffDate: Date;
-      
+
       switch (filters.dateRange) {
         case '24h':
           cutoffDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
@@ -222,17 +222,18 @@ export function ScreenshotHistory({ projectId, screenshotId }: ScreenshotHistory
         default:
           cutoffDate = new Date(0);
       }
-      
-      filtered = filtered.filter(entry => new Date(entry.capturedAt) >= cutoffDate);
+
+      filtered = filtered.filter((entry) => new Date(entry.capturedAt) >= cutoffDate);
     }
 
     // Apply search filter
     if (filters.search) {
       const searchTerm = filters.search.toLowerCase();
-      filtered = filtered.filter(entry =>
-        entry.screenshotName.toLowerCase().includes(searchTerm) ||
-        entry.projectName.toLowerCase().includes(searchTerm) ||
-        entry.metadata.url.toLowerCase().includes(searchTerm)
+      filtered = filtered.filter(
+        (entry) =>
+          entry.screenshotName.toLowerCase().includes(searchTerm) ||
+          entry.projectName.toLowerCase().includes(searchTerm) ||
+          entry.metadata.url.toLowerCase().includes(searchTerm)
       );
     }
 
@@ -251,26 +252,30 @@ export function ScreenshotHistory({ projectId, screenshotId }: ScreenshotHistory
   const handleApproval = async (entryId: string, action: 'approve' | 'reject') => {
     try {
       // In production, this would call the API
-      setHistory(prev => prev.map(entry => 
-        entry.id === entryId 
-          ? { 
-              ...entry, 
-              approvalStatus: action === 'approve' ? 'approved' : 'rejected',
-              approvedBy: user?.fullName || 'Current User',
-              approvedAt: new Date().toISOString()
-            }
-          : entry
-      ));
-      setFilteredHistory(prev => prev.map(entry => 
-        entry.id === entryId 
-          ? { 
-              ...entry, 
-              approvalStatus: action === 'approve' ? 'approved' : 'rejected',
-              approvedBy: user?.fullName || 'Current User',
-              approvedAt: new Date().toISOString()
-            }
-          : entry
-      ));
+      setHistory((prev) =>
+        prev.map((entry) =>
+          entry.id === entryId
+            ? {
+                ...entry,
+                approvalStatus: action === 'approve' ? 'approved' : 'rejected',
+                approvedBy: user?.fullName || 'Current User',
+                approvedAt: new Date().toISOString(),
+              }
+            : entry
+        )
+      );
+      setFilteredHistory((prev) =>
+        prev.map((entry) =>
+          entry.id === entryId
+            ? {
+                ...entry,
+                approvalStatus: action === 'approve' ? 'approved' : 'rejected',
+                approvedBy: user?.fullName || 'Current User',
+                approvedAt: new Date().toISOString(),
+              }
+            : entry
+        )
+      );
     } catch (err) {
       console.error('Error updating approval status:', err);
     }
@@ -288,7 +293,7 @@ export function ScreenshotHistory({ projectId, screenshotId }: ScreenshotHistory
     return (
       <div className="text-center py-12">
         <div className="text-red-600 mb-4">{error}</div>
-        <button 
+        <button
           onClick={loadScreenshotHistory}
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >

@@ -2,7 +2,7 @@
 
 import { useState, FormEvent, ChangeEvent } from 'react';
 import { useUser } from '@clerk/nextjs';
-import { userService } from '../../lib/user-service';
+// Removed direct userService import - using API route instead
 import { Button } from '../ui/Button';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
 
@@ -46,14 +46,25 @@ export function CreateProjectModal({ onClose, onProjectCreated }: CreateProjectM
       setIsSubmitting(true);
       setError(null);
 
-      await userService.createProject(user.id, {
-        name: formData.name.trim(),
-        description: formData.description.trim() || undefined,
-        url: formData.url.trim(),
-        github_repo_owner: formData.github_repo_owner.trim() || undefined,
-        github_repo_name: formData.github_repo_name.trim() || undefined,
-        github_auto_commit: formData.github_auto_commit,
+      const response = await fetch('/api/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          description: formData.description.trim() || undefined,
+          url: formData.url.trim(),
+          github_repo_owner: formData.github_repo_owner.trim() || undefined,
+          github_repo_name: formData.github_repo_name.trim() || undefined,
+          github_auto_commit: formData.github_auto_commit,
+        }),
       });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to create project');
+      }
 
       onProjectCreated();
     } catch (err: any) {
@@ -152,11 +163,16 @@ export function CreateProjectModal({ onClose, onProjectCreated }: CreateProjectM
           </div>
 
           <div className="mb-4 p-4 bg-gray-50 rounded-md">
-            <h4 className="text-sm font-medium text-gray-900 mb-3">GitHub Integration (Optional)</h4>
-            
+            <h4 className="text-sm font-medium text-gray-900 mb-3">
+              GitHub Integration (Optional)
+            </h4>
+
             <div className="grid grid-cols-2 gap-3 mb-3">
               <div>
-                <label htmlFor="github_repo_owner" className="block text-xs font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="github_repo_owner"
+                  className="block text-xs font-medium text-gray-700 mb-1"
+                >
                   Owner
                 </label>
                 <input
@@ -171,7 +187,10 @@ export function CreateProjectModal({ onClose, onProjectCreated }: CreateProjectM
                 />
               </div>
               <div>
-                <label htmlFor="github_repo_name" className="block text-xs font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="github_repo_name"
+                  className="block text-xs font-medium text-gray-700 mb-1"
+                >
                   Repository
                 </label>
                 <input

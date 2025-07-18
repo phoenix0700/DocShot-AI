@@ -1,9 +1,9 @@
 import { createServer } from 'http';
 import { logger } from './lib/logger';
 import Redis from 'ioredis';
-import { createSupabaseClient } from '@docshot/database';
+import { createSupabaseClient, SupabaseClient } from '@docshot/database';
 
-export function startHealthCheckServer(port: number = 3001) {
+export function startHealthCheckServer(port: number) {
   const server = createServer(async (req, res) => {
     if (req.url === '/health' && req.method === 'GET') {
       try {
@@ -17,7 +17,7 @@ export function startHealthCheckServer(port: number = 3001) {
           process.env.NEXT_PUBLIC_SUPABASE_URL!,
           process.env.SUPABASE_SERVICE_KEY!
         );
-        const { error } = await supabase.from('projects').select('id').limit(1);
+        const { error } = await supabase.getClient().from('projects').select('id').limit(1);
 
         if (error) {
           throw new Error(`Database check failed: ${error.message}`);

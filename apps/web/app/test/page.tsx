@@ -1,18 +1,28 @@
 export default function TestPage() {
   return (
-    <div className="min-h-screen bg-white p-8">
-      <h1 className="text-4xl font-bold text-gray-900 mb-4">DocShot AI - Test Page</h1>
-      <p className="text-lg text-gray-600 mb-6">
-        This is a simple test page to verify the web application is working.
-      </p>
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h2 className="text-xl font-semibold text-blue-900 mb-2">✅ Application Status</h2>
-        <ul className="space-y-2 text-blue-800">
-          <li>✅ Next.js 14 is running</li>
-          <li>✅ Tailwind CSS is working</li>
-          <li>✅ App Router is functional</li>
-          <li>✅ TypeScript compilation successful</li>
-        </ul>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">DocShot AI is Running! 🎉</h1>
+        <p className="text-xl text-gray-600 mb-8">Your Next.js app is working correctly.</p>
+        <div className="space-y-4">
+          <p className="text-gray-500">
+            The database connection needs to be configured to access the dashboard.
+          </p>
+          <div className="flex gap-4 justify-center">
+            <a
+              href="/"
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            >
+              Go to Landing Page
+            </a>
+            <a
+              href="/sign-out"
+              className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+            >
+              Sign Out
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );

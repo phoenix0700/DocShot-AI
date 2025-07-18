@@ -26,7 +26,9 @@ interface DiffViewerProps {
 }
 
 export function DiffViewer({ entry, onClose, onApproval }: DiffViewerProps) {
-  const [viewMode, setViewMode] = useState<'side-by-side' | 'overlay' | 'diff-only'>('side-by-side');
+  const [viewMode, setViewMode] = useState<'side-by-side' | 'overlay' | 'diff-only'>(
+    'side-by-side'
+  );
   const [overlayOpacity, setOverlayOpacity] = useState(50);
 
   const handleApproval = (action: 'approve' | 'reject') => {
@@ -42,8 +44,18 @@ export function DiffViewer({ entry, onClose, onApproval }: DiffViewerProps) {
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
           <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
             <div className="text-center text-gray-500">
-              <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              <svg
+                className="w-12 h-12 mx-auto mb-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
               </svg>
               <p className="text-sm">Previous Screenshot</p>
             </div>
@@ -57,8 +69,18 @@ export function DiffViewer({ entry, onClose, onApproval }: DiffViewerProps) {
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
           <div className="aspect-video bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
             <div className="text-center text-blue-600">
-              <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              <svg
+                className="w-12 h-12 mx-auto mb-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
               </svg>
               <p className="text-sm">Current Screenshot</p>
             </div>
@@ -74,8 +96,18 @@ export function DiffViewer({ entry, onClose, onApproval }: DiffViewerProps) {
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
           <div className="aspect-video bg-gradient-to-br from-red-100 to-orange-100 flex items-center justify-center">
             <div className="text-center text-red-600">
-              <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              <svg
+                className="w-12 h-12 mx-auto mb-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+                />
               </svg>
               <p className="text-sm">Visual Diff</p>
               <p className="text-xs">Red areas show changes</p>
@@ -107,8 +139,18 @@ export function DiffViewer({ entry, onClose, onApproval }: DiffViewerProps) {
       <div className="relative bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
         <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
           <div className="text-center text-gray-500">
-            <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            <svg
+              className="w-16 h-16 mx-auto mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
             </svg>
             <p className="text-lg font-medium">Overlay View</p>
             <p className="text-sm">Previous version overlaid with current</p>
@@ -116,13 +158,23 @@ export function DiffViewer({ entry, onClose, onApproval }: DiffViewerProps) {
         </div>
 
         {/* Overlay Image */}
-        <div 
+        <div
           className="absolute inset-0 bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center"
           style={{ opacity: overlayOpacity / 100 }}
         >
           <div className="text-center text-blue-600">
-            <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            <svg
+              className="w-16 h-16 mx-auto mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
             </svg>
             <p className="text-lg font-medium">Current Version</p>
           </div>
@@ -139,8 +191,18 @@ export function DiffViewer({ entry, onClose, onApproval }: DiffViewerProps) {
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
         <div className="aspect-video bg-gradient-to-br from-red-100 to-orange-100 flex items-center justify-center">
           <div className="text-center text-red-600">
-            <svg className="w-20 h-20 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            <svg
+              className="w-20 h-20 mx-auto mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+              />
             </svg>
             <p className="text-xl font-medium">Visual Differences</p>
             <p className="text-sm">Highlighted areas show detected changes</p>
@@ -190,9 +252,11 @@ export function DiffViewer({ entry, onClose, onApproval }: DiffViewerProps) {
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div>
             <h2 className="text-xl font-semibold text-gray-900">Visual Diff Comparison</h2>
-            <p className="text-sm text-gray-600">{entry.screenshotName} - {entry.projectName}</p>
+            <p className="text-sm text-gray-600">
+              {entry.screenshotName} - {entry.projectName}
+            </p>
           </div>
-          
+
           <div className="flex items-center space-x-4">
             {/* View Mode Toggle */}
             <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
@@ -233,7 +297,12 @@ export function DiffViewer({ entry, onClose, onApproval }: DiffViewerProps) {
               className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -251,7 +320,10 @@ export function DiffViewer({ entry, onClose, onApproval }: DiffViewerProps) {
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-600">
               <p>Captured {formatDistanceToNow(new Date(entry.capturedAt), { addSuffix: true })}</p>
-              <p>{entry.metadata.viewport.width} × {entry.metadata.viewport.height} • {entry.metadata.url}</p>
+              <p>
+                {entry.metadata.viewport.width} × {entry.metadata.viewport.height} •{' '}
+                {entry.metadata.url}
+              </p>
             </div>
 
             {/* Approval Actions */}
@@ -275,20 +347,28 @@ export function DiffViewer({ entry, onClose, onApproval }: DiffViewerProps) {
                 </div>
               </div>
             )}
-            
+
             {entry.approvalStatus === 'approved' && (
               <div className="flex items-center space-x-2 text-green-600">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
                 </svg>
                 <span className="text-sm font-medium">Changes Approved</span>
               </div>
             )}
-            
+
             {entry.approvalStatus === 'rejected' && (
               <div className="flex items-center space-x-2 text-red-600">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  <path
+                    fillRule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
                 </svg>
                 <span className="text-sm font-medium">Changes Rejected</span>
               </div>

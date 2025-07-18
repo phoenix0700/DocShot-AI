@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -27,10 +28,15 @@ interface EnhancedProjectDetailProps {
   };
 }
 
-export function EnhancedProjectDetail({ project: initialProject, permissions }: EnhancedProjectDetailProps) {
+export function EnhancedProjectDetail({
+  project: initialProject,
+  permissions,
+}: EnhancedProjectDetailProps) {
   const { user } = useUser();
   const [project, setProject] = useState(initialProject);
-  const [activeTab, setActiveTab] = useState<'overview' | 'screenshots' | 'settings' | 'yaml'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'screenshots' | 'settings' | 'yaml'>(
+    'overview'
+  );
   const [showCreateScreenshot, setShowCreateScreenshot] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -58,7 +64,7 @@ export function EnhancedProjectDetail({ project: initialProject, permissions }: 
 
       // Show success message or redirect to results
       alert(`Successfully queued ${result.count} screenshot jobs!`);
-      
+
       // Refresh project data
       window.location.reload();
     } catch (error) {
@@ -87,33 +93,28 @@ export function EnhancedProjectDetail({ project: initialProject, permissions }: 
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center mb-4">
-          <Link 
-            href="/dashboard"
-            className="text-gray-500 hover:text-gray-700 mr-4"
-          >
+          <Link href="/dashboard" className="text-gray-500 hover:text-gray-700 mr-4">
             ← Back to Dashboard
           </Link>
         </div>
-        
+
         <div className="flex justify-between items-start">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">{project.name}</h1>
-            {project.description && (
-              <p className="text-gray-600 mt-1">{project.description}</p>
-            )}
+            {project.description && <p className="text-gray-600 mt-1">{project.description}</p>}
             <div className="flex items-center mt-2 space-x-4 text-sm text-gray-500">
               <span>🌐 {project.url}</span>
-              <span className={`px-2 py-1 rounded-full text-xs ${
-                project.is_active 
-                  ? 'bg-green-100 text-green-800' 
-                  : 'bg-gray-100 text-gray-800'
-              }`}>
+              <span
+                className={`px-2 py-1 rounded-full text-xs ${
+                  project.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                }`}
+              >
                 {project.is_active ? 'Active' : 'Inactive'}
               </span>
               <span>{project.total_screenshots} screenshots</span>
             </div>
           </div>
-          
+
           <div className="flex space-x-3">
             <Button
               onClick={() => setShowCreateScreenshot(true)}
@@ -124,7 +125,9 @@ export function EnhancedProjectDetail({ project: initialProject, permissions }: 
             </Button>
             <Button
               onClick={runScreenshots}
-              disabled={loading || !permissions.canTakeScreenshot || project.screenshots.length === 0}
+              disabled={
+                loading || !permissions.canTakeScreenshot || project.screenshots.length === 0
+              }
               className="bg-green-600 hover:bg-green-700"
             >
               {loading ? (
@@ -146,16 +149,18 @@ export function EnhancedProjectDetail({ project: initialProject, permissions }: 
           <div className="flex">
             <div className="flex-shrink-0">
               <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-yellow-800">
-                Screenshot Limit Reached
-              </h3>
+              <h3 className="text-sm font-medium text-yellow-800">Screenshot Limit Reached</h3>
               <p className="text-sm text-yellow-700 mt-1">
-                You've used {permissions.usage.screenshots} of {permissions.usage.limit} screenshots this month. 
-                Upgrade to Pro for unlimited screenshots.
+                You've used {permissions.usage.screenshots} of {permissions.usage.limit} screenshots
+                this month. Upgrade to Pro for unlimited screenshots.
               </p>
             </div>
           </div>
@@ -184,27 +189,17 @@ export function EnhancedProjectDetail({ project: initialProject, permissions }: 
 
       {/* Tab Content */}
       <div className="min-h-[400px]">
-        {activeTab === 'overview' && (
-          <ProjectOverview project={project} />
-        )}
-        
+        {activeTab === 'overview' && <ProjectOverview project={project} />}
+
         {activeTab === 'screenshots' && (
-          <ScreenshotGrid 
-            screenshots={project.screenshots} 
-            projectId={project.id}
-          />
+          <ScreenshotGrid screenshots={project.screenshots} projectId={project.id} />
         )}
-        
+
         {activeTab === 'settings' && (
-          <ProjectSettings 
-            project={project} 
-            onProjectUpdated={setProject}
-          />
+          <ProjectSettings project={project} onProjectUpdated={setProject as any} />
         )}
-        
-        {activeTab === 'yaml' && (
-          <YamlConfigViewer project={project} />
-        )}
+
+        {activeTab === 'yaml' && <YamlConfigViewer project={project} />}
       </div>
 
       {/* Create Screenshot Modal */}
@@ -230,19 +225,25 @@ function ProjectOverview({ project }: { project: Project }) {
     },
     {
       label: 'Last Run',
-      value: project.last_run_at 
-        ? new Date(project.last_run_at).toLocaleDateString()
-        : 'Never',
+      value: project.last_run_at ? new Date(project.last_run_at).toLocaleDateString('en-US') : 'Never',
       icon: '⏰',
       color: 'green',
     },
     {
       label: 'Status',
       value: project.last_run_status || 'Not run',
-      icon: project.last_run_status === 'success' ? '✅' : 
-            project.last_run_status === 'failed' ? '❌' : '⏸️',
-      color: project.last_run_status === 'success' ? 'green' : 
-             project.last_run_status === 'failed' ? 'red' : 'gray',
+      icon:
+        project.last_run_status === 'success'
+          ? '✅'
+          : project.last_run_status === 'failed'
+            ? '❌'
+            : '⏸️',
+      color:
+        project.last_run_status === 'success'
+          ? 'green'
+          : project.last_run_status === 'failed'
+            ? 'red'
+            : 'gray',
     },
     {
       label: 'GitHub Integration',
@@ -257,7 +258,10 @@ function ProjectOverview({ project }: { project: Project }) {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat) => (
-          <div key={stat.label} className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+          <div
+            key={stat.label}
+            className="bg-white rounded-lg p-6 shadow-sm border border-gray-200"
+          >
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <span className="text-2xl">{stat.icon}</span>
@@ -278,9 +282,9 @@ function ProjectOverview({ project }: { project: Project }) {
           <div>
             <dt className="text-sm font-medium text-gray-500">Website URL</dt>
             <dd className="text-sm text-gray-900 mt-1">
-              <a 
-                href={project.url} 
-                target="_blank" 
+              <a
+                href={project.url}
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:text-blue-800"
               >
@@ -291,16 +295,14 @@ function ProjectOverview({ project }: { project: Project }) {
           <div>
             <dt className="text-sm font-medium text-gray-500">Created</dt>
             <dd className="text-sm text-gray-900 mt-1">
-              {new Date(project.created_at).toLocaleDateString()}
+              {new Date(project.created_at).toLocaleDateString('en-US')}
             </dd>
           </div>
           {project.schedule && (
             <div>
               <dt className="text-sm font-medium text-gray-500">Schedule</dt>
               <dd className="text-sm text-gray-900 mt-1">
-                <code className="bg-gray-100 px-2 py-1 rounded text-xs">
-                  {project.schedule}
-                </code>
+                <code className="bg-gray-100 px-2 py-1 rounded text-xs">{project.schedule}</code>
               </dd>
             </div>
           )}
@@ -308,7 +310,7 @@ function ProjectOverview({ project }: { project: Project }) {
             <div>
               <dt className="text-sm font-medium text-gray-500">GitHub Repository</dt>
               <dd className="text-sm text-gray-900 mt-1">
-                <a 
+                <a
                   href={`https://github.com/${project.github_repo_owner}/${project.github_repo_name}`}
                   target="_blank"
                   rel="noopener noreferrer"

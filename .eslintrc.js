@@ -1,10 +1,8 @@
 module.exports = {
   root: true,
-  extends: ['eslint:recommended', 'prettier'],
+  extends: [require.resolve('./packages/eslint-config-custom')],
   rules: {
-    'no-unused-vars': 'error',
-    'prefer-const': 'error',
-    'no-var': 'error',
+    // project specific overrides can go here
   },
   ignorePatterns: ['dist/', '.next/', 'node_modules/'],
 };

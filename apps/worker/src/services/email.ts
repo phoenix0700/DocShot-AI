@@ -95,6 +95,20 @@ export class EmailService {
     return html.replace(/<[^>]*>/g, '');
   }
 
+  /**
+   * Deprecated instance helper kept for legacy tests. Prefer using the static
+   * `generateDiffDetectedEmail` moving forward.
+   */
+  generateDiffEmail(
+    data: Parameters<typeof EmailService.generateDiffDetectedEmail>[0]
+  ) {
+    return EmailService.generateDiffDetectedEmail(data);
+  }
+
+  static generateDiffEmail(...args: Parameters<typeof EmailService.generateDiffDetectedEmail>) {
+    return EmailService.generateDiffDetectedEmail(...(args as [any]));
+  }
+
   // Email templates
   static generateScreenshotCapturedEmail(data: {
     projectName: string;
@@ -441,3 +455,10 @@ export class EmailService {
     return { subject, html };
   }
 }
+
+// Factory to maintain backward compatibility with legacy imports
+export function createEmailService(): EmailService {
+  return new EmailService();
+}
+
+// Email templates

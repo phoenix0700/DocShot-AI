@@ -94,9 +94,7 @@ export function RealProjectDashboard({ user: initialUser }: RealProjectDashboard
             )}
           </div>
           <SignOutButton>
-            <button className="text-gray-500 hover:text-gray-700 px-3 py-2">
-              Sign Out
-            </button>
+            <button className="text-gray-500 hover:text-gray-700 px-3 py-2">Sign Out</button>
           </SignOutButton>
         </div>
       </div>
@@ -111,7 +109,8 @@ export function RealProjectDashboard({ user: initialUser }: RealProjectDashboard
             <p className="text-sm text-gray-500">
               {initialUser.subscription_tier === 'free' ? (
                 <>
-                  {permissions.usage.limit - permissions.usage.screenshots} screenshots remaining this month
+                  {permissions.usage.limit - permissions.usage.screenshots} screenshots remaining
+                  this month
                 </>
               ) : (
                 'Unlimited screenshots and projects'
@@ -119,24 +118,24 @@ export function RealProjectDashboard({ user: initialUser }: RealProjectDashboard
             </p>
           </div>
           {initialUser.subscription_tier === 'free' && (
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              Upgrade to Pro
-            </Button>
+            <Button className="bg-blue-600 hover:bg-blue-700">Upgrade to Pro</Button>
           )}
         </div>
-        
+
         {/* Usage Progress Bar */}
         {initialUser.subscription_tier === 'free' && permissions.usage.limit > 0 && (
           <div className="mt-3">
             <div className="flex justify-between text-xs text-gray-500 mb-1">
               <span>Usage</span>
-              <span>{Math.round((permissions.usage.screenshots / permissions.usage.limit) * 100)}%</span>
+              <span>
+                {Math.round((permissions.usage.screenshots / permissions.usage.limit) * 100)}%
+              </span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
+              <div
                 className="bg-blue-600 h-2 rounded-full"
-                style={{ 
-                  width: `${Math.min((permissions.usage.screenshots / permissions.usage.limit) * 100, 100)}%` 
+                style={{
+                  width: `${Math.min((permissions.usage.screenshots / permissions.usage.limit) * 100, 100)}%`,
                 }}
               />
             </div>
@@ -178,7 +177,7 @@ export function RealProjectDashboard({ user: initialUser }: RealProjectDashboard
 
       {/* Create Project Button */}
       <div className="mb-6">
-        <Button 
+        <Button
           onClick={() => setShowCreateModal(true)}
           className="bg-blue-600 hover:bg-blue-700"
           disabled={!permissions.canCreateProject}
@@ -186,9 +185,7 @@ export function RealProjectDashboard({ user: initialUser }: RealProjectDashboard
           {permissions.canCreateProject ? 'Create Project' : 'Project Limit Reached'}
         </Button>
         {!permissions.canCreateProject && initialUser.subscription_tier === 'free' && (
-          <p className="text-sm text-gray-500 mt-2">
-            Upgrade to Pro to create unlimited projects
-          </p>
+          <p className="text-sm text-gray-500 mt-2">Upgrade to Pro to create unlimited projects</p>
         )}
       </div>
 

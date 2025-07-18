@@ -1,29 +1,16 @@
 // Load environment variables FIRST before any other imports
-import { config } from 'dotenv';
+import dotenv from 'dotenv';
 import path from 'path';
 
-// Try multiple paths for .env.local
-const envPaths = [
-  path.resolve(__dirname, '../../../.env.local'),
-  path.resolve(__dirname, '../../.env.local'),
-  path.resolve(__dirname, '.env.local'),
-  path.resolve(__dirname, '.env'),
-];
+// Resolve the path to the web app .env.local file
+const envPath = path.resolve(__dirname, '../../../apps/web/.env.local');
+dotenv.config({ path: envPath });
 
-for (const envPath of envPaths) {
-  try {
-    config({ path: envPath });
-    console.log(`Loaded environment from: ${envPath}`);
-    break;
-  } catch (error) {
-    // Continue to next path
-  }
-}
-
-console.log('Environment variables loaded:');
+console.log('Environment variables loaded from:', envPath);
 console.log('NEXT_PUBLIC_SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'SET' : 'NOT SET');
 console.log('SUPABASE_SERVICE_KEY:', process.env.SUPABASE_SERVICE_KEY ? 'SET' : 'NOT SET');
 console.log('REDIS_URL:', process.env.REDIS_URL ? 'SET' : 'NOT SET');
+console.log('WORKER_HEALTH_CHECK_PORT:', process.env.WORKER_HEALTH_CHECK_PORT || 'NOT SET');
 
 // Now safe to import modules that may use environment variables
 import { Worker } from 'bullmq';
@@ -41,6 +28,15 @@ const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
 const screenshotWorker = new Worker('screenshot', screenshotProcessor, {
   connection: redis,
   concurrency: parseInt(process.env.SCREENSHOT_CONCURRENCY || '3'),
+});
+
+// Add debug logging for worker events
+screenshotWorker.on('ready', () => {
+  logger.info('Screenshot worker is ready and listening for jobs');
+});
+
+screenshotWorker.on('error', (error) => {
+  logger.error('Screenshot worker error:', error);
 });
 
 const diffWorker = new Worker('diff', diffProcessor, {
@@ -74,7 +70,7 @@ const notificationWorker = new Worker('notification', notificationProcessor, {
 });
 
 // Start health check server
-const healthPort = process.env.PORT || process.env.WORKER_HEALTH_PORT || 3001;
+const healthPort = process.env.WORKER_HEALTH_CHECK_PORT || 3001;
 startHealthCheckServer(Number(healthPort));
 
 logger.info('DocShot AI Worker started', {

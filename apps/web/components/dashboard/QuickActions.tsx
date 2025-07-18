@@ -19,7 +19,12 @@ export function QuickActions({ permissions, onCreateProject, projects }: QuickAc
       description: 'Set up a new screenshot automation project',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+          />
         </svg>
       ),
       action: onCreateProject,
@@ -32,7 +37,12 @@ export function QuickActions({ permissions, onCreateProject, projects }: QuickAc
       description: 'Capture screenshots for all active projects',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
         </svg>
       ),
       action: () => console.log('Run all screenshots'),
@@ -45,7 +55,12 @@ export function QuickActions({ permissions, onCreateProject, projects }: QuickAc
       description: 'Learn how to configure and use DocShot AI',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+          />
         </svg>
       ),
       action: () => window.open('/docs', '_blank'),
@@ -58,7 +73,12 @@ export function QuickActions({ permissions, onCreateProject, projects }: QuickAc
       description: 'Import existing YAML configuration files',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"
+          />
         </svg>
       ),
       action: () => console.log('Import configuration'),
@@ -71,35 +91,41 @@ export function QuickActions({ permissions, onCreateProject, projects }: QuickAc
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
       <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {quickActions.filter(action => action.available).map((action, index) => (
-          <button
-            key={index}
-            onClick={action.action}
-            disabled={action.disabled}
-            className={`p-4 rounded-lg border-2 border-dashed border-gray-200 hover:border-gray-300 transition-all duration-200 text-left group ${
-              action.disabled ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-md'
-            }`}
-          >
-            <div className="flex items-start space-x-3">
-              <div className={`${action.color} text-white p-2 rounded-lg group-hover:scale-110 transition-transform duration-200 ${
-                action.disabled ? 'bg-gray-400' : ''
-              }`}>
-                {action.icon}
+        {quickActions
+          .filter((action) => action.available)
+          .map((action, index) => (
+            <button
+              key={index}
+              onClick={action.action}
+              disabled={action.disabled}
+              className={`p-4 rounded-lg border-2 border-dashed border-gray-200 hover:border-gray-300 transition-all duration-200 text-left group ${
+                action.disabled ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-md'
+              }`}
+            >
+              <div className="flex items-start space-x-3">
+                <div
+                  className={`${action.color} text-white p-2 rounded-lg group-hover:scale-110 transition-transform duration-200 ${
+                    action.disabled ? 'bg-gray-400' : ''
+                  }`}
+                >
+                  {action.icon}
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-medium text-gray-900 mb-1">{action.title}</h3>
+                  <p className="text-sm text-gray-600">{action.description}</p>
+                  {action.disabled && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      {action.title.includes('Create')
+                        ? 'Project limit reached'
+                        : 'No active projects'}
+                    </p>
+                  )}
+                </div>
               </div>
-              <div className="flex-1">
-                <h3 className="font-medium text-gray-900 mb-1">{action.title}</h3>
-                <p className="text-sm text-gray-600">{action.description}</p>
-                {action.disabled && (
-                  <p className="text-xs text-gray-500 mt-1">
-                    {action.title.includes('Create') ? 'Project limit reached' : 'No active projects'}
-                  </p>
-                )}
-              </div>
-            </div>
-          </button>
-        ))}
+            </button>
+          ))}
       </div>
 
       {/* Tips Section */}

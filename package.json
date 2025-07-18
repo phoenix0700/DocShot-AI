@@ -5,12 +5,13 @@
   "description": "SaaS tool for automated screenshot capture and updates",
   "scripts": {
     "build": "turbo build",
-    "dev": "turbo dev",
+    "dev": "dotenv -e .env.local -- turbo dev",
+    "dev:quiet": "NODE_NO_WARNINGS=1 dotenv -e .env.local -- turbo dev",
     "lint": "turbo lint",
     "test": "turbo test",
     "type-check": "turbo type-check",
     "clean": "turbo clean",
-    "format": "prettier --write \"**/*.{js,ts,tsx,md,json}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "format:check": "prettier --check \"**/*.{js,ts,tsx,md,json}\"",
     "test:services": "tsx scripts/test-production-services.ts",
     "test:e2e": "tsx scripts/test-e2e-production.ts",
@@ -22,23 +23,27 @@
     "@aws-sdk/client-s3": "^3.699.0",
     "@supabase/supabase-js": "^2.50.1",
     "@types/node": "^20.19.8",
-    "@types/nodemailer": "^6.4.14",
+    "@types/nodemailer": "^6.4.17",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "dotenv": "^17.2.0",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-config-turbo": "^1.13.4",
     "ioredis": "^5.3.2",
     "node-fetch": "^3.3.2",
-    "nodemailer": "^6.9.8",
+    "nodemailer": "^7.0.5",
     "prettier": "^3.6.2",
     "tsx": "^4.7.0",
     "turbo": "^1.13.4",
-    "typescript": "^5.8.3"
+    "typescript": "5.4.3"
   },
   "packageManager": "pnpm@9.15.4",
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=9.0.0"
+  },
+  "dependencies": {
+    "dotenv-cli": "^8.0.0"
   }
 }

@@ -23,7 +23,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const { data: project, error } = await supabase.withUserContext(userId, async (client) => {
     return client
       .from('projects')
-      .select(`
+      .select(
+        `
         *,
         screenshots:screenshots(
           *,
@@ -31,7 +32,8 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             *
           )
         )
-      `)
+      `
+      )
       .eq('id', params.id)
       .single();
   });
@@ -45,10 +47,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <EnhancedProjectDetail 
-        project={project} 
-        permissions={permissions}
-      />
+      <EnhancedProjectDetail project={project} permissions={permissions} />
     </div>
   );
 }

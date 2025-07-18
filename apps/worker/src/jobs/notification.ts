@@ -22,6 +22,8 @@ export const notificationProcessor = async (job: Job) => {
 
     // Fetch project and user details
     const supabase = getSupabaseClient();
+    
+    // First get the project to know the user_id
     const { data: project, error: projectError } = await supabase
       .from('projects')
       .select('name, user_id, config')
@@ -29,8 +31,12 @@ export const notificationProcessor = async (job: Job) => {
       .single();
 
     if (projectError || !project) {
+      logger.error(`Project lookup failed:`, { projectId: data.projectId, error: projectError });
       throw new Error(`Project not found: ${data.projectId}`);
     }
+
+    // Set user context for RLS
+    await supabase.setUserContext(project.user_id);
 
     // Check if email notifications are enabled in config
     const emailRecipients = project.config?.integrations?.email?.recipients || [];

@@ -5,9 +5,10 @@ export {
   MultiTenantSupabaseClient,
 } from './supabase-client';
 
-// Type exports
+// Type exports - use types from the generated types file
 export * from './types';
 
 // Legacy exports for backwards compatibility  
 export * from './client';
-export * from './schemas';
+// Export schemas but not the conflicting types
+export { ProjectSchema, ScreenshotSchema } from './schemas';

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { User, Project } from '@docshot/database';
-import { userService } from '../../lib/user-service';
+// Removed direct userService import - using API routes instead
 import { DashboardHeader } from './DashboardHeader';
 import { DashboardStats } from './DashboardStats';
 import { QuickActions } from './QuickActions';
@@ -38,7 +38,11 @@ interface DashboardData {
   };
   recentActivity: Array<{
     id: string;
-    type: 'screenshot_captured' | 'project_created' | 'visual_change_detected' | 'notification_sent';
+    type:
+      | 'screenshot_captured'
+      | 'project_created'
+      | 'visual_change_detected'
+      | 'notification_sent';
     message: string;
     timestamp: string;
     projectName?: string;
@@ -58,61 +62,63 @@ export function EnhancedDashboard({ user: initialUser }: EnhancedDashboardProps)
   }, []);
 
   const loadDashboardData = async () => {
-    if (!clerkUser?.id) return;
+    const userId = clerkUser?.id || initialUser.clerk_user_id;
 
     try {
       setLoading(true);
       setError(null);
 
-      // Load all dashboard data
-      const [userProjects, userPermissions] = await Promise.all([
-        userService.getUserProjects(clerkUser.id),
-        userService.checkUserPermissions(clerkUser.id),
+      // Load all dashboard data using API routes
+      const [projectsRes, permissionsRes] = await Promise.all([
+        fetch('/api/projects'),
+        fetch('/api/user/permissions'),
       ]);
 
-      // Generate mock stats and activity (in production, these would come from the API)
+      if (!projectsRes.ok || !permissionsRes.ok) {
+        throw new Error('Failed to load dashboard data');
+      }
+
+      const { projects: userProjects } = await projectsRes.json();
+      const userPermissions = await permissionsRes.json();
+
+      // Derive basic stats from the user's projects so the dashboard shows live data.
+      const totalScreenshots = (userProjects || []).reduce(
+        (sum: number, p: any) => sum + (p.total_screenshots ?? 0),
+        0
+      );
+
+      const activeProjects = (userProjects || []).filter((p: any) => p.is_active).length;
+
+      // Count screenshots captured in the last 7 days using last_run_at per project.
+      const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+      const screenshotsThisWeek = (userProjects || []).reduce((sum: number, p: any) => {
+        if (p.last_run_at && new Date(p.last_run_at).getTime() > weekAgo) {
+          return sum + (p.total_screenshots ?? 0);
+        }
+        return sum;
+      }, 0);
+
+      const lastActivityDate = (userProjects || [])
+        .map((p: any) => p.last_run_at)
+        .filter(Boolean)
+        .sort()
+        .pop() || null;
+
+      // Simple success rate: ratio of projects with last_run_status 'success'.
+      const successRuns = (userProjects || []).filter((p: any) => p.last_run_status === 'success').length;
+      const totalRuns = (userProjects || []).filter((p: any) => p.last_run_status).length;
+      const successRate = totalRuns ? Number(((successRuns / totalRuns) * 100).toFixed(1)) : 100;
+
       const stats = {
-        totalScreenshots: 47,
-        activeProjects: userProjects?.length || 0,
-        screenshotsThisWeek: 12,
-        lastActivityDate: new Date().toISOString(),
-        successRate: 98.5,
-        totalChangesDetected: 8,
+        totalScreenshots,
+        activeProjects,
+        screenshotsThisWeek,
+        lastActivityDate,
+        successRate,
+        totalChangesDetected: 0,
       };
 
-      const recentActivity = [
-        {
-          id: '1',
-          type: 'screenshot_captured' as const,
-          message: 'Screenshot captured for Dashboard page',
-          timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-          projectName: 'DocShot Documentation',
-          status: 'success' as const,
-        },
-        {
-          id: '2',
-          type: 'visual_change_detected' as const,
-          message: 'Visual changes detected in header navigation',
-          timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-          projectName: 'Product Website',
-          status: 'warning' as const,
-        },
-        {
-          id: '3',
-          type: 'project_created' as const,
-          message: 'New project created: API Documentation',
-          timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-          status: 'success' as const,
-        },
-        {
-          id: '4',
-          type: 'notification_sent' as const,
-          message: 'Change notification sent to team',
-          timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-          projectName: 'Product Website',
-          status: 'success' as const,
-        },
-      ];
+      const recentActivity: DashboardData['recentActivity'] = [];
 
       setDashboardData({
         projects: userProjects || [],
@@ -141,7 +147,8 @@ export function EnhancedDashboard({ user: initialUser }: EnhancedDashboardProps)
     });
   };
 
-  const isNewUser = dashboardData?.projects.length === 0 && dashboardData?.stats.totalScreenshots === 0;
+  const isNewUser =
+    dashboardData?.projects.length === 0 && dashboardData?.stats.totalScreenshots === 0;
 
   if (loading) {
     return (
@@ -155,7 +162,7 @@ export function EnhancedDashboard({ user: initialUser }: EnhancedDashboardProps)
     return (
       <div className="text-center py-12">
         <p className="text-gray-500">Failed to load dashboard data.</p>
-        <button 
+        <button
           onClick={loadDashboardData}
           className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
@@ -169,10 +176,7 @@ export function EnhancedDashboard({ user: initialUser }: EnhancedDashboardProps)
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <DashboardHeader 
-          user={initialUser} 
-          permissions={dashboardData.permissions}
-        />
+        <DashboardHeader user={initialUser} permissions={dashboardData.permissions} />
 
         {/* Error Message */}
         {error && (
@@ -180,7 +184,11 @@ export function EnhancedDashboard({ user: initialUser }: EnhancedDashboardProps)
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               </div>
               <div className="ml-3">
@@ -190,7 +198,11 @@ export function EnhancedDashboard({ user: initialUser }: EnhancedDashboardProps)
                 <button onClick={() => setError(null)} className="text-red-400 hover:text-red-600">
                   <span className="sr-only">Dismiss</span>
                   <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                    <path
+                      fillRule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </button>
               </div>
@@ -199,14 +211,10 @@ export function EnhancedDashboard({ user: initialUser }: EnhancedDashboardProps)
         )}
 
         {/* Onboarding Guide for New Users */}
-        {isNewUser && (
-          <OnboardingGuide 
-            onCreateProject={() => setShowCreateModal(true)}
-          />
-        )}
+        {isNewUser && <OnboardingGuide onCreateProject={() => setShowCreateModal(true)} />}
 
         {/* Dashboard Stats */}
-        <DashboardStats 
+        <DashboardStats
           stats={dashboardData.stats}
           user={initialUser}
           permissions={dashboardData.permissions}
@@ -217,14 +225,14 @@ export function EnhancedDashboard({ user: initialUser }: EnhancedDashboardProps)
           {/* Left Column - Projects and Quick Actions */}
           <div className="lg:col-span-2 space-y-8">
             {/* Quick Actions */}
-            <QuickActions 
+            <QuickActions
               permissions={dashboardData.permissions}
               onCreateProject={() => setShowCreateModal(true)}
               projects={dashboardData.projects}
             />
 
             {/* Projects Overview */}
-            <ProjectsOverview 
+            <ProjectsOverview
               projects={dashboardData.projects}
               permissions={dashboardData.permissions}
               onCreateProject={() => setShowCreateModal(true)}
@@ -234,10 +242,7 @@ export function EnhancedDashboard({ user: initialUser }: EnhancedDashboardProps)
 
           {/* Right Column - Activity Feed */}
           <div className="lg:col-span-1">
-            <ActivityFeed 
-              activities={dashboardData.recentActivity}
-              stats={dashboardData.stats}
-            />
+            <ActivityFeed activities={dashboardData.recentActivity} stats={dashboardData.stats} />
           </div>
         </div>
 

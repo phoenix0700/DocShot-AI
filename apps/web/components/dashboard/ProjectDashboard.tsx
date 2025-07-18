@@ -160,7 +160,6 @@ export function ProjectDashboard({ userId }: ProjectDashboardProps) {
       {/* Create Project Modal */}
       {showCreateModal && (
         <CreateProjectModal
-          userId={userId}
           onClose={() => setShowCreateModal(false)}
           onProjectCreated={handleProjectCreated}
         />

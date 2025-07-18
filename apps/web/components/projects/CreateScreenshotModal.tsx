@@ -2,7 +2,7 @@
 
 import { useState, FormEvent, ChangeEvent } from 'react';
 import { useUser } from '@clerk/nextjs';
-import { getSupabaseClient } from '@docshot/database';
+// Removed direct Supabase import - using API route instead
 import { Button } from '../ui/Button';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
 
@@ -12,7 +12,11 @@ interface CreateScreenshotModalProps {
   onScreenshotCreated: () => void;
 }
 
-export function CreateScreenshotModal({ projectId, onClose, onScreenshotCreated }: CreateScreenshotModalProps) {
+export function CreateScreenshotModal({
+  projectId,
+  onClose,
+  onScreenshotCreated,
+}: CreateScreenshotModalProps) {
   const { user } = useUser();
   const [formData, setFormData] = useState({
     name: '',
@@ -49,28 +53,26 @@ export function CreateScreenshotModal({ projectId, onClose, onScreenshotCreated 
       setIsSubmitting(true);
       setError(null);
 
-      const supabase = getSupabaseClient();
-      
-      const { error: supabaseError } = await supabase.withUserContext(user.id, async (client) => {
-        return client
-          .from('screenshots')
-          .insert({
-            project_id: projectId,
-            name: formData.name.trim(),
-            url: formData.url.trim(),
-            selector: formData.selector.trim() || null,
-            viewport_width: formData.viewport_width,
-            viewport_height: formData.viewport_height,
-            full_page: formData.full_page,
-            wait_for_selector: formData.wait_for_selector.trim() || null,
-            wait_for_timeout: formData.wait_for_timeout ? parseInt(formData.wait_for_timeout) : null,
-            status: 'pending',
-            retry_count: 0,
-          });
+      const response = await fetch(`/api/projects/${projectId}/screenshots`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          url: formData.url.trim(),
+          selector: formData.selector.trim() || undefined,
+          viewport_width: formData.viewport_width,
+          viewport_height: formData.viewport_height,
+          full_page: formData.full_page,
+          wait_for_selector: formData.wait_for_selector.trim() || undefined,
+          wait_for_timeout: formData.wait_for_timeout || undefined,
+        }),
       });
 
-      if (supabaseError) {
-        throw supabaseError;
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to create screenshot');
       }
 
       onScreenshotCreated();
@@ -82,10 +84,16 @@ export function CreateScreenshotModal({ projectId, onClose, onScreenshotCreated 
     }
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value, type } = e.target;
-    const newValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : 
-                     type === 'number' ? parseInt(value) || 0 : value;
+    const newValue =
+      type === 'checkbox'
+        ? (e.target as HTMLInputElement).checked
+        : type === 'number'
+          ? parseInt(value) || 0
+          : value;
     setFormData((prev) => ({ ...prev, [name]: newValue }));
     if (error) setError(null);
   };
@@ -102,7 +110,12 @@ export function CreateScreenshotModal({ projectId, onClose, onScreenshotCreated 
               disabled={isSubmitting}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -119,7 +132,7 @@ export function CreateScreenshotModal({ projectId, onClose, onScreenshotCreated 
             {/* Basic Configuration */}
             <div className="space-y-4">
               <h4 className="text-sm font-medium text-gray-900">Basic Configuration</h4>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -171,7 +184,8 @@ export function CreateScreenshotModal({ projectId, onClose, onScreenshotCreated 
                   disabled={isSubmitting}
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Leave empty to capture the full page, or specify a CSS selector to capture a specific element
+                  Leave empty to capture the full page, or specify a CSS selector to capture a
+                  specific element
                 </p>
               </div>
             </div>
@@ -179,10 +193,13 @@ export function CreateScreenshotModal({ projectId, onClose, onScreenshotCreated 
             {/* Viewport Configuration */}
             <div className="space-y-4 pt-4 border-t border-gray-200">
               <h4 className="text-sm font-medium text-gray-900">Viewport Configuration</h4>
-              
+
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div>
-                  <label htmlFor="viewport_width" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="viewport_width"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Width (px)
                   </label>
                   <input
@@ -199,7 +216,10 @@ export function CreateScreenshotModal({ projectId, onClose, onScreenshotCreated 
                 </div>
 
                 <div>
-                  <label htmlFor="viewport_height" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="viewport_height"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Height (px)
                   </label>
                   <input
@@ -239,28 +259,52 @@ export function CreateScreenshotModal({ projectId, onClose, onScreenshotCreated 
                   <div className="space-y-1">
                     <button
                       type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, viewport_width: 1920, viewport_height: 1080 }))}
+                      onClick={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          viewport_width: 1920,
+                          viewport_height: 1080,
+                        }))
+                      }
                       className="text-xs text-blue-600 hover:text-blue-800 block"
                     >
                       1920×1080 (Desktop)
                     </button>
                     <button
                       type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, viewport_width: 1366, viewport_height: 768 }))}
+                      onClick={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          viewport_width: 1366,
+                          viewport_height: 768,
+                        }))
+                      }
                       className="text-xs text-blue-600 hover:text-blue-800 block"
                     >
                       1366×768 (Laptop)
                     </button>
                     <button
                       type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, viewport_width: 768, viewport_height: 1024 }))}
+                      onClick={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          viewport_width: 768,
+                          viewport_height: 1024,
+                        }))
+                      }
                       className="text-xs text-blue-600 hover:text-blue-800 block"
                     >
                       768×1024 (Tablet)
                     </button>
                     <button
                       type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, viewport_width: 375, viewport_height: 667 }))}
+                      onClick={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          viewport_width: 375,
+                          viewport_height: 667,
+                        }))
+                      }
                       className="text-xs text-blue-600 hover:text-blue-800 block"
                     >
                       375×667 (Mobile)
@@ -273,10 +317,13 @@ export function CreateScreenshotModal({ projectId, onClose, onScreenshotCreated 
             {/* Advanced Options */}
             <div className="space-y-4 pt-4 border-t border-gray-200">
               <h4 className="text-sm font-medium text-gray-900">Advanced Options</h4>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="wait_for_selector" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="wait_for_selector"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Wait for Selector
                   </label>
                   <input
@@ -295,7 +342,10 @@ export function CreateScreenshotModal({ projectId, onClose, onScreenshotCreated 
                 </div>
 
                 <div>
-                  <label htmlFor="wait_for_timeout" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="wait_for_timeout"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Wait Timeout (ms)
                   </label>
                   <input

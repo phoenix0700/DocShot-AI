@@ -9,7 +9,7 @@ import { formatDistanceToNow } from 'date-fns';
 interface Project {
   id: string;
   name: string;
-  description: string | null;
+  description?: string | null;
   created_at: string;
   updated_at: string;
   screenshot_count?: number;

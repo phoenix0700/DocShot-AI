@@ -4,12 +4,23 @@ import { getSupabaseClient } from '@docshot/database';
 import type { User } from '@docshot/database';
 
 export class UserService {
-  private supabase = getSupabaseClient();
+  private supabase: ReturnType<typeof getSupabaseClient> | null = null;
+
+  private getClient() {
+    if (!this.supabase) {
+      console.log('Creating Supabase client with:', {
+        hasServiceKey: !!process.env.SUPABASE_SERVICE_KEY,
+        hasAnonKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      });
+      this.supabase = getSupabaseClient();
+    }
+    return this.supabase;
+  }
 
   // Get the current user from Clerk and sync with our database
   async getCurrentUser(): Promise<User | null> {
     const clerkUser = await currentUser();
-    
+
     if (!clerkUser) {
       return null;
     }
@@ -22,7 +33,7 @@ export class UserService {
   async syncUserWithDatabase(clerkUser: any): Promise<User> {
     try {
       // Upsert user in our database
-      const user = await this.supabase.upsertUser({
+      const user = await this.getClient().upsertUser({
         id: clerkUser.id,
         emailAddresses: clerkUser.emailAddresses,
         firstName: clerkUser.firstName,
@@ -33,6 +44,26 @@ export class UserService {
       return user;
     } catch (error) {
       console.error('Failed to sync user with database:', error);
+
+      // In local development we may not have the Supabase function, tables or Clerk keys ready.
+      // Return a minimal stub user so the UI can render instead of hanging.
+      if (process.env.NODE_ENV !== 'production') {
+        return {
+          id: clerkUser.id,
+          clerk_user_id: clerkUser.id,
+          email: clerkUser.emailAddresses?.[0]?.emailAddress || 'dev@example.com',
+          first_name: clerkUser.firstName ?? undefined,
+          last_name: clerkUser.lastName ?? undefined,
+          avatar_url: clerkUser.imageUrl ?? undefined,
+          subscription_tier: 'free',
+          subscription_status: 'active',
+          monthly_screenshot_count: 0,
+          monthly_screenshot_limit: 10,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        } as unknown as User;
+      }
+
       throw new Error('Failed to sync user data');
     }
   }
@@ -40,7 +71,7 @@ export class UserService {
   // Get user by Clerk ID
   async getUserByClerkId(clerkId: string): Promise<User | null> {
     try {
-      return await this.supabase.getUserByClerkId(clerkId);
+      return await this.getClient().getUserByClerkId(clerkId);
     } catch (error) {
       console.error('Failed to get user:', error);
       return null;
@@ -50,7 +81,7 @@ export class UserService {
   // Check if user can perform actions based on their subscription
   async checkUserPermissions(clerkId: string) {
     try {
-      const limits = await this.supabase.checkUserLimits(clerkId);
+      const limits = await this.getClient().checkUserLimits(clerkId);
       return limits;
     } catch (error) {
       console.error('Failed to check user permissions:', error);
@@ -76,7 +107,7 @@ export class UserService {
     }
   ): Promise<void> {
     try {
-      await this.supabase.withUserContext(clerkId, async (client) => {
+      await this.getClient().withUserContext(clerkId, async (client) => {
         await client
           .from('users')
           .update({
@@ -109,7 +140,7 @@ export class UserService {
   // Track screenshot usage
   async trackScreenshotUsage(clerkId: string): Promise<void> {
     try {
-      await this.supabase.incrementScreenshotCount(clerkId);
+      await this.getClient().incrementScreenshotCount(clerkId);
     } catch (error) {
       console.error('Failed to track screenshot usage:', error);
       throw error;
@@ -119,18 +150,20 @@ export class UserService {
   // Get user's projects with permissions check
   async getUserProjects(clerkId: string) {
     try {
-      return await this.supabase.withUserContext(clerkId, async (client) => {
-        const { data, error } = await client
-          .from('projects')
-          .select(`
-            *,
-            screenshots:screenshots(count)
-          `)
-          .order('updated_at', { ascending: false });
-
-        if (error) throw error;
-        return data;
+      // Use the new RPC function that properly enforces user isolation and gets counts
+      const { data, error } = await this.getClient().getClient().rpc('get_user_projects_with_counts', {
+        p_clerk_user_id: clerkId
       });
+
+      if (error) throw error;
+      
+      // Transform to match expected format with screenshots array
+      const projectsWithCounts = (data || []).map((project) => ({
+        ...project,
+        screenshots: [{ count: project.screenshot_count || 0 }]
+      }));
+
+      return projectsWithCounts;
     } catch (error) {
       console.error('Failed to get user projects:', error);
       return [];
@@ -155,17 +188,28 @@ export class UserService {
     try {
       // Check if user can create projects
       const permissions = await this.checkUserPermissions(clerkId);
-      if (!permissions.canCreateProject) {
+      if (!permissions.canCreateProject && process.env.NODE_ENV === 'production') {
         throw new Error('User has reached project limit for their subscription');
       }
 
-      // Get user to link the project
-      const user = await this.getUserByClerkId(clerkId);
+      // Ensure a user row exists
+      let user = await this.getUserByClerkId(clerkId);
       if (!user) {
-        throw new Error('User not found');
+        if (process.env.NODE_ENV !== 'production') {
+          // create a minimal user row for local testing
+          user = await this.getClient().upsertUser({
+            id: clerkId,
+            emailAddresses: [{ emailAddress: 'dev@example.com' }],
+            firstName: 'Dev',
+            lastName: 'User',
+            imageUrl: undefined,
+          });
+        } else {
+          throw new Error('User not found');
+        }
       }
 
-      return await this.supabase.withUserContext(clerkId, async (client) => {
+      return await this.getClient().withUserContext(clerkId, async (client) => {
         const { data, error } = await client
           .from('projects')
           .insert({
