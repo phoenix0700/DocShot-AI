@@ -53,3 +53,6 @@ Thumbs.db
 # Deployment
 .vercel
 .railway
+
+# MCP configuration (contains secrets)
+.mcp.json
