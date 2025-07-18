@@ -37,10 +37,20 @@ class MultiTenantSupabaseClient {
       is_local: true,
     });
 
-    if (error && error.code !== 'PGRST202') {
-      // PGRST202: function not found in schema cache – likely local dev DB without the helper
-      console.error('Failed to set user context:', error);
-      throw new Error(`Failed to set user context: ${error.message}`);
+    if (error) {
+      // If we get an invalid API key error, it's a critical configuration issue
+      if (error.message === 'Invalid API key') {
+        console.error('CRITICAL: Invalid Supabase API key. Please check your SUPABASE_SERVICE_KEY in .env.local');
+        console.error('The service key might have expired or been regenerated in Supabase dashboard.');
+        // Don't throw here to allow the app to partially function
+        return;
+      }
+      
+      if (error.code !== 'PGRST202') {
+        // PGRST202: function not found in schema cache – likely local dev DB without the helper
+        console.error('Failed to set user context:', error);
+        throw new Error(`Failed to set user context: ${error.message}`);
+      }
     }
   }
 
