@@ -2,10 +2,10 @@
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "nixpacks",
-    "buildCommand": "cd ../.. && pnpm install && pnpm build && pnpm build --filter=worker"
+    "buildCommand": "pnpm install"
   },
   "deploy": {
-    "startCommand": "cd /app/apps/worker && ls -la dist/ && NODE_ENV=production node dist/index.js",
+    "startCommand": "cd /app/apps/worker && pnpm start",
     "healthcheckPath": "/health",
     "healthcheckTimeout": 100,
     "restartPolicyType": "ON_FAILURE",
