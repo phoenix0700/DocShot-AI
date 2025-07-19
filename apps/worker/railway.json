@@ -5,7 +5,7 @@
     "buildCommand": "cd ../.. && pnpm install && pnpm build --filter=worker"
   },
   "deploy": {
-    "startCommand": "cd apps/worker && pnpm start",
+    "startCommand": "cd /app/apps/worker && ls -la dist/ && NODE_ENV=production node dist/index.js",
     "healthcheckPath": "/health",
     "healthcheckTimeout": 100,
     "restartPolicyType": "ON_FAILURE",
