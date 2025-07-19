@@ -3,6 +3,10 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
+    "noEmit": false,
+    "module": "commonjs",
+    "target": "es2020",
+    "moduleResolution": "node",
     "paths": {
       "@docshot/shared": ["../../packages/shared/src"],
       "@docshot/database": ["../../packages/database/src"],
