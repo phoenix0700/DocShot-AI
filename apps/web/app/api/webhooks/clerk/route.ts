@@ -4,10 +4,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Webhook } from 'svix';
 import { getSupabaseClient } from '@docshot/database';
 
-const webhookSecret = process.env.CLERK_WEBHOOK_SECRET!;
-
-if (!webhookSecret) {
-  throw new Error('Missing CLERK_WEBHOOK_SECRET environment variable');
+function getWebhookSecret() {
+  const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    throw new Error('Missing CLERK_WEBHOOK_SECRET environment variable');
+  }
+  return webhookSecret;
 }
 
 export async function POST(req: NextRequest) {
@@ -29,7 +31,7 @@ export async function POST(req: NextRequest) {
   const body = JSON.parse(payload);
 
   // Create a new Svix instance with your secret.
-  const wh = new Webhook(webhookSecret);
+  const wh = new Webhook(getWebhookSecret());
 
   let evt: any;
 

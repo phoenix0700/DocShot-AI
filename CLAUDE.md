@@ -212,6 +212,57 @@ NOTIFICATION_CONCURRENCY=10
 - Use caching strategies for frequently accessed data
 - Respect third-party API rate limits (GitHub: 5000/hr, Notion: 3/sec)
 
+## Documentation Structure
+
+### Complete Documentation Portal
+The `/docs` route provides comprehensive public documentation:
+- **Navigation**: Professional sidebar with all sections linked
+- **Content**: 13+ pages covering getting started, API reference, integrations, troubleshooting
+- **Public Access**: Documentation is publicly accessible (no authentication required)
+- **Static Generation**: All docs pages are statically generated for performance
+
+### Key Documentation Pages
+- `/docs` - Homepage with feature overview
+- `/docs/first-screenshot` - Step-by-step tutorial for new users
+- `/docs/yaml-reference` - Complete YAML configuration reference
+- `/docs/integrations/*` - Setup guides for GitHub, Slack, Email, Webhooks
+- `/docs/api/endpoints` - Complete API documentation with examples
+- `/docs/troubleshooting` - Comprehensive troubleshooting guide
+- `/docs/faq` - Detailed FAQ covering all common questions
+
+## Critical Implementation Notes
+
+### Next.js Build Requirements
+- **Dynamic Pages**: Auth-protected pages (dashboard, projects) must use `export const dynamic = 'force-dynamic'`
+- **API Routes**: Routes using `auth()` from Clerk need `export const dynamic = 'force-dynamic'`
+- **Environment Variables**: Webhook secrets must be lazy-loaded to avoid build-time errors
+
+### User Context Pattern
+The system uses a specific pattern for user isolation:
+```typescript
+// In API routes
+const { userId } = auth();
+if (!userId) return unauthorized;
+
+// Database operations automatically filtered by RLS
+const supabase = createSupabaseClient();
+await supabase.setUserContext(userId);
+```
+
+### Middleware Configuration
+Authentication middleware excludes documentation:
+```typescript
+export default authMiddleware({
+  publicRoutes: ['/', '/docs', '/docs/(.*)'],
+});
+```
+
+### Component Architecture
+- **Client Components**: Only for interactive elements with hooks (`'use client'`)
+- **Server Components**: Default for data fetching and static content
+- **Shared UI**: Reusable components in `apps/web/components/ui/`
+- **Feature Components**: Domain-specific components grouped by area (dashboard, projects, etc.)
+
 ## Project Status
 
 The DocShot AI SaaS platform is feature-complete with:
@@ -224,5 +275,6 @@ The DocShot AI SaaS platform is feature-complete with:
 - ✅ Landing page with 3-tier pricing
 - ✅ Enhanced dashboard with onboarding
 - ✅ Screenshot history system with visual diff viewer
+- ✅ **Complete public documentation portal ready for users**
 
 The system is ready for production deployment and user acquisition.

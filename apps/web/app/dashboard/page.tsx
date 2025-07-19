@@ -4,6 +4,8 @@ import { userService } from '../../lib/user-service';
 import { EnhancedDashboard } from '../../components/dashboard/EnhancedDashboard';
 import { Database } from '@docshot/database';
 
+export const dynamic = 'force-dynamic';
+
 export default async function DashboardPage() {
   // When Clerk is configured use normal auth flow; otherwise return stub user
   if (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) {

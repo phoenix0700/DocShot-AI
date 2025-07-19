@@ -158,7 +158,7 @@ export class UserService {
       if (error) throw error;
       
       // Transform to match expected format with screenshots array
-      const projectsWithCounts = (data || []).map((project) => ({
+      const projectsWithCounts = (data || []).map((project: any) => ({
         ...project,
         screenshots: [{ count: project.screenshot_count || 0 }]
       }));
