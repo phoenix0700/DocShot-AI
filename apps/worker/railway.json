@@ -2,7 +2,7 @@
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "nixpacks",
-    "buildCommand": "cd ../.. && pnpm install && pnpm build --filter=worker"
+    "buildCommand": "cd ../.. && pnpm install && pnpm build && pnpm build --filter=worker"
   },
   "deploy": {
     "startCommand": "cd /app/apps/worker && ls -la dist/ && NODE_ENV=production node dist/index.js",
