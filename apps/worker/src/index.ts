@@ -2,11 +2,14 @@
 import dotenv from 'dotenv';
 import path from 'path';
 
-// Resolve the path to the web app .env.local file
-const envPath = path.resolve(__dirname, '../../../apps/web/.env.local');
-dotenv.config({ path: envPath });
-
-console.log('Environment variables loaded from:', envPath);
+// Only load .env.local in development, Railway provides env vars
+if (process.env.NODE_ENV !== 'production') {
+  const envPath = path.resolve(__dirname, '../../../apps/web/.env.local');
+  dotenv.config({ path: envPath });
+  console.log('Environment variables loaded from:', envPath);
+} else {
+  console.log('Using Railway environment variables (production mode)');
+}
 console.log('NEXT_PUBLIC_SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'SET' : 'NOT SET');
 console.log('SUPABASE_SERVICE_KEY:', process.env.SUPABASE_SERVICE_KEY ? 'SET' : 'NOT SET');
 console.log('REDIS_URL:', process.env.REDIS_URL ? 'SET' : 'NOT SET');
@@ -70,7 +73,8 @@ const notificationWorker = new Worker('notification', notificationProcessor, {
 });
 
 // Start health check server
-const healthPort = process.env.WORKER_HEALTH_CHECK_PORT || 3001;
+// Use Railway's PORT or fallback to WORKER_HEALTH_CHECK_PORT or default 3001
+const healthPort = process.env.PORT || process.env.WORKER_HEALTH_CHECK_PORT || 3001;
 startHealthCheckServer(Number(healthPort));
 
 logger.info('DocShot AI Worker started', {
