@@ -16,7 +16,7 @@ export default function EmailIntegrationPage() {
           Email notifications in DocShot AI help you:
         </p>
         <ul className="list-disc list-inside space-y-2 text-gray-700">
-          <li>Alert team members who don't use the dashboard daily</li>
+          <li>Alert team members who don&apos;t use the dashboard daily</li>
           <li>Send summary reports to stakeholders</li>
           <li>Get immediate alerts for critical failures</li>
           <li>Provide visual context with attached screenshots</li>
@@ -31,7 +31,7 @@ export default function EmailIntegrationPage() {
         </h2>
         
         <p className="text-gray-700 mb-4">
-          Add email notification settings to your project's YAML:
+          Add email notification settings to your project&apos;s YAML:
         </p>
 
         <div className="bg-gray-900 text-gray-100 rounded-lg p-6 overflow-x-auto">
@@ -40,9 +40,9 @@ export default function EmailIntegrationPage() {
   email:
     # Required: List of recipient email addresses
     recipients:
-      - "team@example.com"
-      - "qa@example.com"
-      - "stakeholder@example.com"
+      - &quot;team@example.com&quot;
+      - &quot;qa@example.com&quot;
+      - &quot;stakeholder@example.com&quot;
     
     # Optional: When to send notifications
     notifications:
@@ -136,7 +136,7 @@ export default function EmailIntegrationPage() {
                       <ul className="list-disc list-inside ml-4">
                         <li>
                           <strong>Analytics Page:</strong><br/>
-                          Timeout waiting for selector ".chart-container"
+                          Timeout waiting for selector &quot;.chart-container&quot;
                         </li>
                         <li>
                           <strong>User Profile:</strong><br/>
@@ -230,7 +230,7 @@ export default function EmailIntegrationPage() {
   email:
     # Default recipients
     recipients:
-      - "team@example.com"
+      - &quot;team@example.com&quot;
     
     # Conditional recipients
     conditionalRecipients:
@@ -240,7 +240,7 @@ export default function EmailIntegrationPage() {
       
       onChange:
         - "design@example.com"
-        - "qa@example.com"
+        - &quot;qa@example.com&quot;
       
       largeChanges:  # > 20% pixels changed
         - "product@example.com"
@@ -436,7 +436,7 @@ export default function EmailIntegrationPage() {
               <li>Add noreply@docshot.ai to your email whitelist</li>
               <li>Check with your IT team about email filters</li>
               <li>Use company email addresses, not personal</li>
-              <li>Ensure your domain's SPF records are correct</li>
+              <li>Ensure your domain&apos;s SPF records are correct</li>
             </ul>
           </div>
 

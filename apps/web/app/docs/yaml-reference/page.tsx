@@ -142,7 +142,7 @@ schedule:
               <tr>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-mono">waitUntil</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">string</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">"networkidle"</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm">&quot;networkidle&quot;</td>
                 <td className="px-6 py-4 text-sm">When to consider page loaded</td>
               </tr>
               <tr>
@@ -278,19 +278,19 @@ schedule:
           </p>
           <ul className="space-y-3">
             <li>
-              <code className="bg-gray-200 px-2 py-1 rounded text-sm">"load"</code>
+              <code className="bg-gray-200 px-2 py-1 rounded text-sm">&quot;load&quot;</code>
               <p className="text-gray-600 mt-1">Wait for the load event (fastest, but may miss dynamic content)</p>
             </li>
             <li>
-              <code className="bg-gray-200 px-2 py-1 rounded text-sm">"domcontentloaded"</code>
+              <code className="bg-gray-200 px-2 py-1 rounded text-sm">&quot;domcontentloaded&quot;</code>
               <p className="text-gray-600 mt-1">Wait for DOM content to be loaded</p>
             </li>
             <li>
-              <code className="bg-gray-200 px-2 py-1 rounded text-sm">"networkidle"</code>
+              <code className="bg-gray-200 px-2 py-1 rounded text-sm">&quot;networkidle&quot;</code>
               <p className="text-gray-600 mt-1">Wait for network to be idle (recommended for most cases)</p>
             </li>
             <li>
-              <code className="bg-gray-200 px-2 py-1 rounded text-sm">"networkidle0"</code>
+              <code className="bg-gray-200 px-2 py-1 rounded text-sm">&quot;networkidle0&quot;</code>
               <p className="text-gray-600 mt-1">Wait for 0 network connections (most thorough)</p>
             </li>
           </ul>
@@ -562,7 +562,7 @@ advanced:
           </p>
           <div className="bg-white rounded-lg p-4 border border-yellow-300">
             <p className="font-semibold text-gray-900 mb-2">Syntax:</p>
-            <code className="text-sm text-gray-700">{"{{VARIABLE_NAME}}"}</code>
+            <code className="text-sm text-gray-700">{`{{VARIABLE_NAME}}`}</code>
             <p className="text-gray-600 mt-2 text-sm">
               Environment variables are resolved at runtime from your project settings.
             </p>

@@ -500,7 +500,7 @@ export default function ApiEndpointsPage() {
                   <tr>
                     <td className="py-2 font-mono">action</td>
                     <td className="py-2">string</td>
-                    <td className="py-2">Action: "approve" or "reject"</td>
+                    <td className="py-2">Action: &quot;approve&quot; or &quot;reject&quot;</td>
                   </tr>
                   <tr>
                     <td className="py-2 font-mono">comment</td>

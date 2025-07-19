@@ -32,13 +32,13 @@ export default function SlackIntegrationPage() {
               <a href="https://api.slack.com/apps" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700">
                 Slack App Directory
               </a>{' '}
-              and click "Create New App"
+              and click &quot;Create New App&quot;
             </p>
           </li>
           
           <li>
             <p className="text-gray-700">
-              <strong>2.</strong> Choose "From scratch" and name your app "DocShot AI"
+              <strong>2.</strong> Choose &quot;From scratch&quot; and name your app &quot;DocShot AI&quot;
             </p>
             <div className="bg-gray-50 rounded-lg p-4 mt-2">
               <p className="text-sm text-gray-600">
@@ -49,19 +49,19 @@ export default function SlackIntegrationPage() {
 
           <li>
             <p className="text-gray-700">
-              <strong>3.</strong> Navigate to "Incoming Webhooks" in the sidebar
+              <strong>3.</strong> Navigate to &quot;Incoming Webhooks&quot; in the sidebar
             </p>
           </li>
 
           <li>
             <p className="text-gray-700">
-              <strong>4.</strong> Toggle "Activate Incoming Webhooks" to ON
+              <strong>4.</strong> Toggle &quot;Activate Incoming Webhooks&quot; to ON
             </p>
           </li>
 
           <li>
             <p className="text-gray-700">
-              <strong>5.</strong> Click "Add New Webhook to Workspace"
+              <strong>5.</strong> Click &quot;Add New Webhook to Workspace&quot;
             </p>
           </li>
 

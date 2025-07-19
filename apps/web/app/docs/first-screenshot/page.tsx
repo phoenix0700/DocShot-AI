@@ -26,7 +26,7 @@ export default function FirstScreenshotPage() {
         </h2>
         <div className="bg-gray-50 rounded-lg p-6 mb-4">
           <p className="mb-4">
-            After signing in, you'll see the dashboard. Click the <strong>"Create Project"</strong> button.
+            After signing in, you&apos;ll see the dashboard. Click the <strong>&quot;Create Project&quot;</strong> button.
           </p>
           <div className="bg-white border border-gray-200 rounded-md p-4 font-mono text-sm">
             <p className="text-gray-600"># Example project details:</p>
@@ -35,7 +35,7 @@ export default function FirstScreenshotPage() {
           </div>
         </div>
         <p className="text-gray-700">
-          Give your project a meaningful name - you'll likely create multiple projects for different sites or sections.
+          Give your project a meaningful name - you&apos;ll likely create multiple projects for different sites or sections.
         </p>
       </section>
 
@@ -45,34 +45,34 @@ export default function FirstScreenshotPage() {
           Step 2: Configure Your Screenshots
         </h2>
         <p className="mb-4 text-gray-700">
-          DocShot AI uses YAML configuration to define what screenshots to capture. Here's a simple example to get started:
+          DocShot AI uses YAML configuration to define what screenshots to capture. Here&apos;s a simple example to get started:
         </p>
         
         <div className="bg-gray-900 text-gray-100 rounded-lg p-6 mb-4 overflow-x-auto">
           <pre className="text-sm">
 {`project:
-  name: "My Documentation Site"
-  description: "Automated screenshots for our documentation"
+  name: &quot;My Documentation Site&quot;
+  description: &quot;Automated screenshots for our documentation&quot;
 
 screenshots:
-  - name: "Homepage Hero"
-    url: "https://docs.example.com"
+  - name: &quot;Homepage Hero&quot;
+    url: &quot;https://docs.example.com&quot;
     selector: ".hero-section"  # Optional: capture specific element
     viewport:
       width: 1920
       height: 1080
     enabled: true
 
-  - name: "Getting Started Guide"
-    url: "https://docs.example.com/getting-started"
+  - name: &quot;Getting Started Guide&quot;
+    url: &quot;https://docs.example.com/getting-started&quot;
     fullPage: true  # Capture entire page
     viewport:
       width: 1920
       height: 1080
     enabled: true
 
-  - name: "Mobile Homepage"
-    url: "https://docs.example.com"
+  - name: &quot;Mobile Homepage&quot;
+    url: &quot;https://docs.example.com&quot;
     viewport:
       width: 375
       height: 812
@@ -115,7 +115,7 @@ screenshots:
           </li>
         </ul>
         <p className="text-gray-700">
-          Click <strong>"Save Configuration"</strong> once all errors are resolved.
+          Click <strong>&quot;Save Configuration&quot;</strong> once all errors are resolved.
         </p>
       </section>
 
@@ -126,7 +126,7 @@ screenshots:
         </h2>
         <div className="bg-gray-50 rounded-lg p-6 mb-4">
           <p className="mb-4 text-gray-700">
-            Navigate to your project dashboard and click the <strong>"Run Screenshots"</strong> button.
+            Navigate to your project dashboard and click the <strong>&quot;Run Screenshots&quot;</strong> button.
           </p>
           <div className="space-y-3">
             <p className="text-gray-700">
@@ -139,7 +139,7 @@ screenshots:
               <span className="font-semibold">3.</span> Screenshots are captured and stored securely
             </p>
             <p className="text-gray-700">
-              <span className="font-semibold">4.</span> You'll see the results in your dashboard
+              <span className="font-semibold">4.</span> You&apos;ll see the results in your dashboard
             </p>
           </div>
         </div>
@@ -187,7 +187,7 @@ screenshots:
       {/* What's Next */}
       <section className="mb-10">
         <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-          What's Next?
+          What&apos;s Next?
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="border border-gray-200 rounded-lg p-6">
@@ -251,7 +251,7 @@ screenshots:
         <ul className="space-y-3 text-sm">
           <li>
             <strong className="text-gray-900">Screenshots timing out?</strong>
-            <p className="text-gray-600">Try adding <code className="bg-gray-200 px-1 rounded">waitUntil: "networkidle"</code> to your config</p>
+            <p className="text-gray-600">Try adding <code className="bg-gray-200 px-1 rounded">waitUntil: &quot;networkidle&quot;</code> to your config</p>
           </li>
           <li>
             <strong className="text-gray-900">Capturing wrong element?</strong>

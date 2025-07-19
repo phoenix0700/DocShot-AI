@@ -22,7 +22,7 @@ export default function TroubleshootingPage() {
             </li>
             <li className="flex items-start">
               <span className="mr-2">✓</span>
-              <span>Ensure you're using the latest version of your browser</span>
+              <span>Ensure you&apos;re using the latest version of your browser</span>
             </li>
             <li className="flex items-start">
               <span className="mr-2">✓</span>
@@ -53,7 +53,7 @@ export default function TroubleshootingPage() {
                   Screenshot capture times out
                 </h4>
                 <p className="text-gray-700 mb-3">
-                  Error: "Navigation timeout exceeded" or "Timeout waiting for selector"
+                  Error: &quot;Navigation timeout exceeded&quot; or &quot;Timeout waiting for selector&quot;
                 </p>
                 <div className="bg-gray-50 rounded-lg p-4">
                   <p className="font-semibold text-gray-900 mb-2">Solutions:</p>
@@ -214,7 +214,7 @@ waitFor: 3000`}
                   Real changes not being detected
                 </h4>
                 <p className="text-gray-700 mb-3">
-                  Visual changes aren't triggering notifications
+                  Visual changes aren&apos;t triggering notifications
                 </p>
                 <div className="bg-gray-50 rounded-lg p-4">
                   <p className="font-semibold text-gray-900 mb-2">Solutions:</p>
@@ -242,16 +242,16 @@ waitFor: 3000`}
                   GitHub push failing
                 </h4>
                 <p className="text-gray-700 mb-3">
-                  Error: "Permission denied" or "Repository not found"
+                  Error: &quot;Permission denied&quot; or &quot;Repository not found&quot;
                 </p>
                 <div className="bg-gray-50 rounded-lg p-4">
                   <p className="font-semibold text-gray-900 mb-2">Checklist:</p>
                   <ul className="space-y-2 text-gray-700 text-sm">
-                    <li>✓ GitHub token has "Contents: Write" permission</li>
-                    <li>✓ Repository format is "owner/repo"</li>
+                    <li>✓ GitHub token has &quot;Contents: Write&quot; permission</li>
+                    <li>✓ Repository format is &quot;owner/repo&quot;</li>
                     <li>✓ Branch exists and you have access</li>
-                    <li>✓ Token hasn't expired</li>
-                    <li>✓ Path doesn't contain invalid characters</li>
+                    <li>✓ Token hasn&apos;t expired</li>
+                    <li>✓ Path doesn&apos;t contain invalid characters</li>
                   </ul>
                   <div className="mt-3 p-3 bg-yellow-50 rounded">
                     <p className="text-sm text-yellow-800">
@@ -282,7 +282,7 @@ waitFor: 3000`}
                     <li>Check if notifications are enabled in YAML</li>
                     <li>Verify channel allows app posts</li>
                     <li>Look for errors in job logs</li>
-                    <li>Ensure webhook URL hasn't been revoked</li>
+                    <li>Ensure webhook URL hasn&apos;t been revoked</li>
                   </ol>
                 </div>
               </div>
@@ -326,7 +326,7 @@ waitFor: 3000`}
                 <div className="bg-gray-50 rounded-lg p-4">
                   <p className="font-semibold text-gray-900 mb-2">Optimization Tips:</p>
                   <ol className="list-decimal list-inside space-y-2 text-gray-700 text-sm">
-                    <li>Reduce viewport size if full resolution isn't needed</li>
+                    <li>Reduce viewport size if full resolution isn&apos;t needed</li>
                     <li>Use specific selectors instead of full page captures</li>
                     <li>Minimize <code className="bg-gray-200 px-1 rounded">waitFor</code> times</li>
                     <li>Disable unnecessary resource loading:
@@ -374,10 +374,10 @@ waitFor: 3000`}
         <div className="space-y-4">
           <div className="border border-gray-200 rounded-lg p-4">
             <h3 className="font-mono text-sm text-red-600 mb-2">
-              "Subscription limit reached"
+              &quot;Subscription limit reached&quot;
             </h3>
             <p className="text-gray-700 text-sm mb-2">
-              You've exceeded your monthly screenshot limit.
+              You&apos;ve exceeded your monthly screenshot limit.
             </p>
             <p className="text-gray-600 text-sm">
               <strong>Solution:</strong> Upgrade your plan or wait for the next billing cycle.
@@ -386,19 +386,19 @@ waitFor: 3000`}
 
           <div className="border border-gray-200 rounded-lg p-4">
             <h3 className="font-mono text-sm text-red-600 mb-2">
-              "Invalid YAML configuration"
+              &quot;Invalid YAML configuration&quot;
             </h3>
             <p className="text-gray-700 text-sm mb-2">
               Your YAML has syntax errors or invalid fields.
             </p>
             <p className="text-gray-600 text-sm">
-              <strong>Solution:</strong> Use the YAML editor's validation to find and fix errors.
+              <strong>Solution:</strong> Use the YAML editor&apos;s validation to find and fix errors.
             </p>
           </div>
 
           <div className="border border-gray-200 rounded-lg p-4">
             <h3 className="font-mono text-sm text-red-600 mb-2">
-              "Failed to capture screenshot: ERR_NAME_NOT_RESOLVED"
+              &quot;Failed to capture screenshot: ERR_NAME_NOT_RESOLVED&quot;
             </h3>
             <p className="text-gray-700 text-sm mb-2">
               The URL cannot be reached (DNS error).
@@ -410,10 +410,10 @@ waitFor: 3000`}
 
           <div className="border border-gray-200 rounded-lg p-4">
             <h3 className="font-mono text-sm text-red-600 mb-2">
-              "Storage upload failed"
+              &quot;Storage upload failed&quot;
             </h3>
             <p className="text-gray-700 text-sm mb-2">
-              Screenshot captured but couldn't be saved.
+              Screenshot captured but couldn&apos;t be saved.
             </p>
             <p className="text-gray-600 text-sm">
               <strong>Solution:</strong> This is usually temporary. Retry the capture.
@@ -428,7 +428,7 @@ waitFor: 3000`}
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-green-50 rounded-lg p-6">
-            <h3 className="font-semibold text-green-900 mb-3">✅ Do's</h3>
+            <h3 className="font-semibold text-green-900 mb-3">✅ Do&apos;s</h3>
             <ul className="space-y-2 text-green-800 text-sm">
               <li>• Test selectors in browser DevTools first</li>
               <li>• Start with a single screenshot to verify setup</li>
@@ -441,15 +441,15 @@ waitFor: 3000`}
           </div>
 
           <div className="bg-red-50 rounded-lg p-6">
-            <h3 className="font-semibold text-red-900 mb-3">❌ Don'ts</h3>
+            <h3 className="font-semibold text-red-900 mb-3">❌ Don&apos;ts</h3>
             <ul className="space-y-2 text-red-800 text-sm">
-              <li>• Don't capture entire pages if not needed</li>
-              <li>• Don't use overly generic CSS selectors</li>
-              <li>• Don't ignore validation warnings</li>
-              <li>• Don't hardcode credentials in YAML</li>
-              <li>• Don't set excessive wait times</li>
-              <li>• Don't capture frequently changing content</li>
-              <li>• Don't enable all notifications at once</li>
+              <li>• Don&apos;t capture entire pages if not needed</li>
+              <li>• Don&apos;t use overly generic CSS selectors</li>
+              <li>• Don&apos;t ignore validation warnings</li>
+              <li>• Don&apos;t hardcode credentials in YAML</li>
+              <li>• Don&apos;t set excessive wait times</li>
+              <li>• Don&apos;t capture frequently changing content</li>
+              <li>• Don&apos;t enable all notifications at once</li>
             </ul>
           </div>
         </div>
@@ -491,7 +491,7 @@ debug:
         </h2>
         
         <p className="text-gray-700 mb-4">
-          If you can't find a solution here, we're ready to help:
+          If you can&apos;t find a solution here, we&apos;re ready to help:
         </p>
         
         <div className="space-y-3">

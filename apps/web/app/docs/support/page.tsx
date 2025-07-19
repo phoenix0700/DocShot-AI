@@ -27,7 +27,7 @@ export default function SupportPage() {
               </div>
             </div>
             <p className="text-gray-700 mb-4">
-              Send us an email and we'll get back to you within 24 hours (usually much faster).
+              Send us an email and we&apos;ll get back to you within 24 hours (usually much faster).
             </p>
             <a href="mailto:support@docshot.ai" className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium">
               support@docshot.ai
@@ -169,7 +169,7 @@ export default function SupportPage() {
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Check Service Status</h3>
               <p className="text-gray-700">
-                Before reporting an issue, check if it's a known system-wide problem.
+                Before reporting an issue, check if it&apos;s a known system-wide problem.
               </p>
             </div>
             <a href="https://status.docshot.ai" target="_blank" rel="noopener noreferrer" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">

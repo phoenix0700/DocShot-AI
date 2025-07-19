@@ -36,7 +36,7 @@ export function DashboardHeader({ user, permissions }: DashboardHeaderProps) {
           {getGreeting()}, {userName}!
         </h1>
         <p className="text-gray-600 mt-1">
-          Here's what's happening with your screenshot automation
+          Here&apos;s what&apos;s happening with your screenshot automation
         </p>
       </div>
 

@@ -139,7 +139,7 @@ export default function IntegrationsPage() {
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-3">1. Configure in YAML</h3>
             <p className="text-gray-700 mb-3">
-              Add integration settings to your project's YAML configuration:
+              Add integration settings to your project&apos;s YAML configuration:
             </p>
             <div className="bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto">
               <pre className="text-sm">
@@ -182,7 +182,7 @@ export default function IntegrationsPage() {
         <h2 className="text-2xl font-semibold text-gray-900 mb-4">Integration Best Practices</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-blue-50 rounded-lg p-6">
-            <h3 className="font-semibold text-blue-900 mb-3">✅ Do's</h3>
+            <h3 className="font-semibold text-blue-900 mb-3">✅ Do&apos;s</h3>
             <ul className="space-y-2 text-blue-800 text-sm">
               <li>• Use environment variables for sensitive data</li>
               <li>• Test integrations with a single screenshot first</li>
@@ -193,13 +193,13 @@ export default function IntegrationsPage() {
           </div>
 
           <div className="bg-red-50 rounded-lg p-6">
-            <h3 className="font-semibold text-red-900 mb-3">❌ Don'ts</h3>
+            <h3 className="font-semibold text-red-900 mb-3">❌ Don&apos;ts</h3>
             <ul className="space-y-2 text-red-800 text-sm">
-              <li>• Don't commit API keys or tokens to your repo</li>
-              <li>• Don't spam channels with too frequent updates</li>
-              <li>• Don't use production webhooks for testing</li>
-              <li>• Don't ignore failed integration notifications</li>
-              <li>• Don't give excessive permissions to tokens</li>
+              <li>• Don&apos;t commit API keys or tokens to your repo</li>
+              <li>• Don&apos;t spam channels with too frequent updates</li>
+              <li>• Don&apos;t use production webhooks for testing</li>
+              <li>• Don&apos;t ignore failed integration notifications</li>
+              <li>• Don&apos;t give excessive permissions to tokens</li>
             </ul>
           </div>
         </div>

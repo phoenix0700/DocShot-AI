@@ -115,7 +115,7 @@ export default function DocsPage() {
       <section className="bg-gray-50 rounded-lg p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-3">Need Help?</h2>
         <p className="text-gray-600 mb-4">
-          Can't find what you're looking for? We're here to help.
+          Can&apos;t find what you&apos;re looking for? We&apos;re here to help.
         </p>
         <div className="flex flex-wrap gap-4">
           <Link href="/docs/support">

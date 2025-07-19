@@ -20,7 +20,7 @@ export default function WebhooksIntegrationPage() {
         <ul className="list-disc list-inside space-y-2 text-gray-700 mb-6">
           <li>Update your own systems when screenshots change</li>
           <li>Trigger custom workflows and automations</li>
-          <li>Integrate with tools that aren't natively supported</li>
+          <li>Integrate with tools that aren&apos;t natively supported</li>
           <li>Build custom dashboards and monitoring</li>
           <li>Create audit trails and compliance records</li>
         </ul>
@@ -31,7 +31,7 @@ export default function WebhooksIntegrationPage() {
         <h2 className="text-2xl font-semibold text-gray-900 mb-4">Configuration</h2>
         
         <p className="text-gray-700 mb-4">
-          Add webhook configuration to your project's YAML file:
+          Add webhook configuration to your project&apos;s YAML file:
         </p>
 
         <div className="bg-gray-900 text-gray-100 rounded-lg p-6 mb-6 overflow-x-auto">
@@ -236,7 +236,7 @@ export default function WebhooksIntegrationPage() {
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
           <h3 className="text-lg font-semibold text-yellow-900 mb-2">⚠️ Important Security Notice</h3>
           <p className="text-yellow-800">
-            Always validate webhook payloads to ensure they're coming from DocShot AI. We provide HMAC signatures for secure validation.
+            Always validate webhook payloads to ensure they&apos;re coming from DocShot AI. We provide HMAC signatures for secure validation.
           </p>
         </div>
 
@@ -449,9 +449,9 @@ echo json_encode(['status' => 'ok']);`}
             <h3 className="font-semibold text-gray-900 mb-2">Getting 401 Unauthorized errors?</h3>
             <ul className="space-y-2 text-gray-700 text-sm">
               <li>• Verify your webhook secret matches exactly</li>
-              <li>• Ensure you're using the raw request body for validation</li>
-              <li>• Check you're reading the correct header name</li>
-              <li>• Make sure the signature includes the "sha256=" prefix</li>
+              <li>• Ensure you&apos;re using the raw request body for validation</li>
+              <li>• Check you&apos;re reading the correct header name</li>
+              <li>• Make sure the signature includes the &quot;sha256=&quot; prefix</li>
             </ul>
           </div>
 
@@ -474,13 +474,13 @@ echo json_encode(['status' => 'ok']);`}
         </h2>
         
         <p className="text-gray-700 mb-4">
-          Ready to build your custom integration? Here's what to do:
+          Ready to build your custom integration? Here&apos;s what to do:
         </p>
         
         <ol className="list-decimal list-inside space-y-2 text-gray-700">
           <li>Set up your webhook endpoint with signature validation</li>
           <li>Add the webhook configuration to your project YAML</li>
-          <li>Test with a single screenshot to verify it's working</li>
+          <li>Test with a single screenshot to verify it&apos;s working</li>
           <li>Implement your business logic for each event type</li>
           <li>Monitor webhook deliveries in your dashboard</li>
         </ol>

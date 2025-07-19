@@ -89,7 +89,7 @@ export default function FAQPage() {
             <ul className="list-disc list-inside space-y-2 text-gray-700">
               <li>Daily capture of 5 screenshots = 150 screenshots/month</li>
               <li>Weekly capture of 20 screenshots = 80 screenshots/month</li>
-              <li>Failed captures don't count against your limit</li>
+              <li>Failed captures don&apos;t count against your limit</li>
             </ul>
           </div>
 
@@ -98,7 +98,7 @@ export default function FAQPage() {
               Can I change plans anytime?
             </h3>
             <p className="text-gray-700">
-              Yes! You can upgrade or downgrade your plan at any time. When upgrading, you'll get immediate access to higher limits. When downgrading, the change takes effect at the next billing cycle.
+              Yes! You can upgrade or downgrade your plan at any time. When upgrading, you&apos;ll get immediate access to higher limits. When downgrading, the change takes effect at the next billing cycle.
             </p>
           </div>
 
@@ -276,7 +276,7 @@ export default function FAQPage() {
               <li>Enterprise: Unlimited retention</li>
             </ul>
             <p className="text-gray-700 mt-3">
-              You can delete screenshots at any time, and they'll be permanently removed within 24 hours.
+              You can delete screenshots at any time, and they&apos;ll be permanently removed within 24 hours.
             </p>
           </div>
         </div>
@@ -352,11 +352,11 @@ export default function FAQPage() {
       {/* Getting Help */}
       <section className="bg-gray-50 rounded-lg p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-3">
-          Didn't Find Your Answer?
+          Didn&apos;t Find Your Answer?
         </h2>
         
         <p className="text-gray-700 mb-4">
-          We're here to help! Here are ways to get assistance:
+          We&apos;re here to help! Here are ways to get assistance:
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

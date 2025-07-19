@@ -45,7 +45,7 @@ export default function GitHubIntegrationPage() {
           
           <li>
             <p className="text-gray-700">
-              <strong>2.</strong> Click "Generate new token"
+              <strong>2.</strong> Click &quot;Generate new token&quot;
             </p>
           </li>
 
@@ -78,11 +78,11 @@ Pull requests: Write (if using PR workflow)`}
 
           <li>
             <p className="text-gray-700">
-              <strong>5.</strong> Click "Generate token" and copy the token immediately
+              <strong>5.</strong> Click &quot;Generate token&quot; and copy the token immediately
             </p>
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-2">
               <p className="text-yellow-800 text-sm">
-                ⚠️ Save this token securely - you won't be able to see it again!
+                ⚠️ Save this token securely - you won&apos;t be able to see it again!
               </p>
             </div>
           </li>
@@ -104,7 +104,7 @@ Pull requests: Write (if using PR workflow)`}
           
           <li>
             <p className="text-gray-700">
-              <strong>2.</strong> Navigate to "Environment Variables"
+              <strong>2.</strong> Navigate to &quot;Environment Variables&quot;
             </p>
           </li>
 
@@ -122,7 +122,7 @@ Pull requests: Write (if using PR workflow)`}
 
           <li>
             <p className="text-gray-700">
-              <strong>4.</strong> Click "Save" to store the token securely
+              <strong>4.</strong> Click &quot;Save&quot; to store the token securely
             </p>
           </li>
         </ol>
@@ -135,7 +135,7 @@ Pull requests: Write (if using PR workflow)`}
         </h2>
         
         <p className="text-gray-700 mb-4">
-          Add the GitHub integration to your project's YAML configuration:
+          Add the GitHub integration to your project&apos;s YAML configuration:
         </p>
 
         <div className="bg-gray-900 text-gray-100 rounded-lg p-6 overflow-x-auto">
@@ -172,17 +172,17 @@ Pull requests: Write (if using PR workflow)`}
           <div className="space-y-3">
             <div className="border-l-4 border-blue-400 pl-4">
               <p className="font-semibold text-gray-900">repo</p>
-              <p className="text-gray-600 text-sm">The GitHub repository where screenshots will be pushed. Use the format "owner/repo".</p>
+              <p className="text-gray-600 text-sm">The GitHub repository where screenshots will be pushed. Use the format &quot;owner/repo&quot;.</p>
             </div>
 
             <div className="border-l-4 border-blue-400 pl-4">
               <p className="font-semibold text-gray-900">path</p>
-              <p className="text-gray-600 text-sm">Directory path within the repository. Will be created if it doesn't exist.</p>
+              <p className="text-gray-600 text-sm">Directory path within the repository. Will be created if it doesn&apos;t exist.</p>
             </div>
 
             <div className="border-l-4 border-blue-400 pl-4">
               <p className="font-semibold text-gray-900">branch</p>
-              <p className="text-gray-600 text-sm">Target branch for commits. Defaults to the repository's default branch.</p>
+              <p className="text-gray-600 text-sm">Target branch for commits. Defaults to the repository&apos;s default branch.</p>
             </div>
 
             <div className="border-l-4 border-blue-400 pl-4">
@@ -326,21 +326,21 @@ Pull requests: Write (if using PR workflow)`}
             <div className="space-y-4">
               <div>
                 <p className="font-semibold text-red-900">Authentication Failed</p>
-                <p className="text-red-800 text-sm">Ensure your GitHub token has the correct permissions and hasn't expired.</p>
+                <p className="text-red-800 text-sm">Ensure your GitHub token has the correct permissions and hasn&apos;t expired.</p>
               </div>
               
               <div>
                 <p className="font-semibold text-red-900">Repository Not Found</p>
-                <p className="text-red-800 text-sm">Check the repo format is "owner/repo" and you have access to it.</p>
+                <p className="text-red-800 text-sm">Check the repo format is &quot;owner/repo&quot; and you have access to it.</p>
               </div>
               
               <div>
                 <p className="font-semibold text-red-900">Permission Denied</p>
-                <p className="text-red-800 text-sm">Your token needs "Contents: Write" permission for the repository.</p>
+                <p className="text-red-800 text-sm">Your token needs &quot;Contents: Write&quot; permission for the repository.</p>
               </div>
               
               <div>
-                <p className="font-semibold text-red-900">Branch Doesn't Exist</p>
+                <p className="font-semibold text-red-900">Branch Doesn&apos;t Exist</p>
                 <p className="text-red-800 text-sm">Ensure the specified branch exists in your repository.</p>
               </div>
             </div>
